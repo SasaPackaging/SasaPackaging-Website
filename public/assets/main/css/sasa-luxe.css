@@ -1,0 +1,96 @@
+/* SASA Packaging — Luxury layer. Loaded AFTER sasa-premium.css.
+   Delete this file + its <link> in master.blade.php to undo everything. */
+
+:root {
+  --sx-font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --sx-gold-line: linear-gradient(90deg, var(--sx-sage), var(--sx-sage-deep));
+}
+
+/* Elegant serif for big headings only (body and small headings stay Inter/Outfit) */
+.sx-site .sx-title {
+  font-family: var(--sx-font-display);
+  font-weight: 600;
+  font-size: clamp(2.1rem, 3.6vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+}
+.sx-site .sx-slide__content h1,
+.sx-site .sx-slide__content h2 {
+  font-family: var(--sx-font-display);
+  font-weight: 600;
+  font-size: clamp(2.5rem, 5.2vw, 4.2rem);
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+}
+
+/* Small decorative line under centred section headings */
+.sx-head .sx-title::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 2px;
+  margin: 16px auto 0;
+  border-radius: 2px;
+  background: var(--sx-gold-line);
+}
+.sx-head--left .sx-title::after { margin-left: 0; }
+
+/* Eyebrow: wider spacing + a thin line */
+.sx-eyebrow { letter-spacing: 0.2em; }
+.sx-head .sx-eyebrow::before {
+  content: "";
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  margin-right: 12px;
+  vertical-align: middle;
+  background: var(--sx-sage-deep);
+}
+
+/* Buttons: refined and slightly roomier */
+.sx-btn { letter-spacing: 0.02em; padding-inline: 26px; }
+.sx-btn--primary {
+  background: linear-gradient(135deg, #93b091, var(--sx-sage-deep));
+  box-shadow: 0 8px 20px rgba(132, 162, 130, 0.38);
+}
+.sx-btn--primary:hover {
+  background: linear-gradient(135deg, var(--sx-sage), #93b091);
+  box-shadow: 0 12px 26px rgba(132, 162, 130, 0.45);
+}
+
+/* Cards: hairline border, soft inner highlight, deeper hover shadow */
+.sx-card {
+  border-color: rgba(132, 162, 130, 0.22);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 10px 30px rgba(31, 45, 34, 0.06);
+}
+.sx-product:hover,
+.sx-value:hover,
+.sx-news:hover {
+  box-shadow: 0 22px 48px rgba(31, 45, 34, 0.14);
+}
+
+/* Product image: soft gradient appears on hover */
+.sx-product__img { position: relative; }
+.sx-product__img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 55%, rgba(43, 63, 47, 0.28));
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+.sx-product:hover .sx-product__img::after { opacity: 1; }
+
+/* Nav links: slightly more refined */
+.sx-nav__list > li > a { letter-spacing: 0.01em; }
+
+/* Staggered reveal: cards fade in one after another */
+.sx-js .sx-values .sx-reveal:nth-child(2),
+.sx-js .sx-products .sx-reveal:nth-child(2),
+.sx-js .sx-grid-3 .sx-reveal:nth-child(2) { transition-delay: 0.08s; }
+.sx-js .sx-values .sx-reveal:nth-child(3),
+.sx-js .sx-products .sx-reveal:nth-child(3),
+.sx-js .sx-grid-3 .sx-reveal:nth-child(3) { transition-delay: 0.16s; }
+.sx-js .sx-values .sx-reveal:nth-child(4),
+.sx-js .sx-products .sx-reveal:nth-child(4) { transition-delay: 0.24s; }

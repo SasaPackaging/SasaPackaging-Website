@@ -1,0 +1,32 @@
+
+# Dependencies
+/vendor/
+/node_modules/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Laravel logs and runtime files
+/storage/logs/*
+!/storage/logs/.gitignore
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/framework/testing/*
+/storage/framework/.gitignore
+/bootstrap/cache/*.php
+!/bootstrap/cache/.gitignore
+
+# User uploads - ignore uploaded files, not the directory structure
+/public/upload/*
+!/public/upload/.gitignore
+
+# Database dumps and logs
+*.sql
+error_log
+*.log
+
+# Local development files
+.phpunit.result.cache
