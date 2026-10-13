@@ -1,0 +1,148 @@
+/* SASA Packaging — Navbar (v1) Mine
+   Floating "pill" header: plain at the top of the page, turns into a soft glass pill on scroll.
+   Needs NO change in partial/header.php. Load AFTER sasa-premium.css, on EVERY page (layouts/master).
+   Palette: blush #F6E2E9 · ivory #FEFAF3 · sage #B8CFB3 · deep sage #84A282
+   Every rule starts with #sxHeader so it always wins over sasa-premium.css / sasa-luxe.css. */
+
+:root { --sx-header-h: 88px; }
+
+/* ---------- Header shell ---------- */
+#sxHeader {
+  background: transparent;
+  border-bottom: 0;
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+  box-shadow: none;
+  padding: 8px 0;
+}
+/* soft ivory fade behind the pill so page content never peeks out above it */
+#sxHeader.is-scrolled { box-shadow: none; background: linear-gradient(to bottom, rgba(254, 250, 243, .96) 0, rgba(254, 250, 243, .96) 45%, rgba(254, 250, 243, 0) 100%); }
+#sxHeader .sx-header__bar { height: 72px; isolation: isolate; }
+
+/* the pill itself (sits behind the content, invisible until the page is scrolled) */
+#sxHeader .sx-header__bar::before {
+  content: "";
+  position: absolute; z-index: -1; inset: 0 -12px;
+  border-radius: 999px;
+  background: rgba(254, 250, 243, .84);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+          backdrop-filter: blur(16px) saturate(1.5);
+  border: 1px solid rgba(132, 162, 130, .30);
+  box-shadow: 0 14px 38px rgba(31, 45, 34, .10), 0 2px 6px rgba(31, 45, 34, .04);
+  opacity: 0;
+  transform: scale(.985, .88);
+  transition: opacity .35s ease, transform .45s cubic-bezier(.2, .8, .2, 1);
+}
+#sxHeader.is-scrolled .sx-header__bar::before,
+#sxHeader.is-open .sx-header__bar::before { opacity: 1; transform: none; }
+@media (min-width: 1200px) { #sxHeader .sx-header__bar::before { inset: 0 -22px; } }
+
+/* ---------- Scroll progress line (Chrome / Edge / Safari 26+; other browsers simply skip it) ---------- */
+@supports (animation-timeline: scroll()) {
+  #sxHeader::after {
+    content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 3px; z-index: 5;
+    background: linear-gradient(90deg, #B8CFB3, #84A282 55%, #e6b3c4);
+    transform: scaleX(0); transform-origin: 0 50%;
+    animation: sxNavProgress linear both; animation-timeline: scroll(root block);
+  }
+  @keyframes sxNavProgress { to { transform: scaleX(1); } }
+}
+
+/* ---------- Logo ---------- */
+#sxHeader .sx-logo img { transition: transform .35s cubic-bezier(.2, .8, .2, 1); }
+#sxHeader .sx-logo:hover img { transform: scale(1.05); }
+
+/* ---------- Menu links (desktop) ---------- */
+@media (min-width: 1200px) {
+  #sxHeader .sx-nav__list { gap: 4px; }
+  #sxHeader .sx-nav__list > li > a {
+    position: relative; padding: 10px 15px; border-radius: 999px;
+    font-weight: 500; letter-spacing: .01em; color: var(--sx-ink);
+    box-shadow: none; background: transparent;
+    transition: background .25s ease, color .25s ease;
+  }
+  /* hover: soft blush pill */
+  #sxHeader .sx-nav__list > li > a:hover,
+  #sxHeader .sx-nav__list > li:hover > a,
+  #sxHeader .sx-nav__list > li:focus-within > a { background: var(--sx-blush); color: var(--sx-ink); box-shadow: none; }
+  /* current page: sage pill */
+  #sxHeader .sx-nav__list > li.is-active > a {
+    background: rgba(184, 207, 179, .45); color: #2f4a32; font-weight: 600; border-radius: 999px; box-shadow: none;
+  }
+  /* no underline / dot under any link (also cancels the old sasa-luxe underline) */
+  #sxHeader .sx-nav__list > li > a::after { content: none; display: none; }
+}
+
+/* ---------- "Get a Quote" button ---------- */
+#sxHeader .sx-header__actions .sx-btn {
+  position: relative; overflow: hidden; gap: 10px;
+  padding: 10px 10px 10px 22px; border: 0; border-radius: 999px;
+  background: linear-gradient(135deg, #93b091 0%, #84A282 55%, #738f71 100%);
+  color: #1f2d22; font-weight: 650; letter-spacing: .01em;
+  box-shadow: 0 8px 20px rgba(132, 162, 130, .45);
+  transition: transform .3s cubic-bezier(.2, .8, .2, 1), box-shadow .3s ease;
+}
+#sxHeader .sx-header__actions .sx-btn::after {
+  content: ""; flex: none; width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255, 255, 255, .6) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231f2d22' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") center / 14px no-repeat;
+  transition: transform .3s cubic-bezier(.2, .8, .2, 1), background-color .3s;
+}
+#sxHeader .sx-header__actions .sx-btn::before {          /* light sweep on hover */
+  content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .55), transparent);
+  transform: skewX(-20deg); transition: left .7s ease;
+}
+#sxHeader .sx-header__actions .sx-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(132, 162, 130, .55); color: #1f2d22; }
+#sxHeader .sx-header__actions .sx-btn:hover::before { left: 120%; }
+#sxHeader .sx-header__actions .sx-btn:hover::after { transform: translateX(3px); background-color: #fff; }
+
+/* ---------- Dropdown + mega menu (desktop) ---------- */
+@media (min-width: 1200px) {
+  #sxHeader .sx-sub {
+    top: calc(100% + 16px); padding: 10px; border-radius: 20px;
+    border: 1px solid rgba(132, 162, 130, .28);
+    box-shadow: 0 28px 70px rgba(31, 45, 34, .16), 0 4px 10px rgba(31, 45, 34, .04);
+    background: rgba(255, 255, 255, .97);
+  }
+  #sxHeader .sx-sub::before { top: -18px; height: 18px; }      /* hover bridge so the menu doesn't close */
+  #sxHeader .sx-sub a { border-radius: 12px; transition: background .2s, color .2s, transform .2s; }
+  #sxHeader .sx-sub a:hover { background: var(--sx-blush-tint); color: var(--sx-sage-ink); padding-left: 12px; transform: translateX(3px); }
+
+  #sxHeader .sx-mega {
+    left: -22px; right: -22px; padding: 26px 22px 22px; gap: 10px 12px; border-top: 0;
+  }
+  #sxHeader .sx-mega::after {                                  /* coloured top edge */
+    content: ""; position: absolute; left: 36px; right: 36px; top: 0; height: 3px; border-radius: 0 0 4px 4px;
+    background: linear-gradient(90deg, #B8CFB3, #84A282 55%, #F6E2E9);
+  }
+  #sxHeader .sx-mega__col { padding: 14px 16px 12px; border-radius: 16px; transition: background .25s; }
+  #sxHeader .sx-mega__col:hover { background: var(--sx-blush-tint); }
+  #sxHeader .sx-mega__col h3 { margin: 0 0 8px; padding: 0 0 8px; border-bottom: 1px solid var(--sx-line); }
+  #sxHeader .sx-mega__col h3 a { position: relative; padding: 4px 0 4px 16px; font-weight: 650; }
+  #sxHeader .sx-mega__col h3 a::before {
+    content: ""; position: absolute; left: 0; top: 50%; width: 7px; height: 7px; margin-top: -3.5px; border-radius: 50%;
+    background: var(--sx-sage-deep); transition: transform .25s, background .25s;
+  }
+  #sxHeader .sx-mega__col:hover h3 a::before { transform: scale(1.5); background: #d995ad; }
+  #sxHeader .sx-mega__col li a { padding: 5px 0; transition: color .2s, transform .2s; }
+  #sxHeader .sx-mega__col li a:hover { background: none; transform: translateX(4px); text-decoration: none; padding-left: 0; }
+}
+
+/* ---------- Mobile / tablet ---------- */
+@media (max-width: 1199px) {
+  #sxHeader .sx-burger { width: 46px; height: 46px; border-radius: 50%; border-color: rgba(132, 162, 130, .5); background: rgba(255, 255, 255, .8); transition: background .2s; }
+  #sxHeader .sx-burger:hover { background: var(--sx-blush); }
+  #sxHeader .sx-nav {
+    top: calc(100% + 14px); left: -12px; right: -12px; padding: 8px 22px 22px;
+    border: 1px solid rgba(132, 162, 130, .28); border-radius: 26px;
+    box-shadow: 0 30px 60px rgba(31, 45, 34, .18);
+    background: rgba(254, 250, 243, .98);
+    max-height: calc(100vh - var(--sx-header-h) - 24px); max-height: calc(100dvh - var(--sx-header-h) - 24px);
+  }
+  #sxHeader .sx-nav__list > li > a { font-weight: 550; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  #sxHeader *, #sxHeader *::before, #sxHeader *::after { transition-duration: .01ms !important; animation: none !important; }
+}

@@ -1,0 +1,142 @@
+/* SASA Packaging — Services grid (v1)
+   Palette: blush #F6E2E9 · cream #FEFAF3 · sage #B8CFB3 · deep sage #84A282
+   Load AFTER sasa-ui / sasa-premium / tailwind-generated. */
+
+.sx-sv {
+  --s-blush: #F6E2E9;
+  --s-cream: #FEFAF3;
+  --s-sage: #B8CFB3;
+  --s-deep: #84A282;
+  --s-ink: #1f2b22;
+  --s-gap: clamp(16px, 2vw, 26px);
+  position: relative;
+  overflow-x: clip;
+  background: var(--s-cream);
+  border-top: 1px solid rgba(132, 162, 130, .18);
+  padding-top: clamp(56px, 8vw, 110px);
+  padding-bottom: clamp(56px, 8vw, 110px);
+}
+
+/* ---------- Section heading ("Our Services") – same size as the About heading ----------
+   Change the size in BOTH places (sasa-about.css .sx-ab__title and here) if you ever want a different one. */
+.sx-section.sx-sv .sx-title,
+.sx-section.sx-sv h2 {
+  font-family: Outfit, Inter, system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 3.6vw, 3.1rem) !important;
+  line-height: 1.12;
+  letter-spacing: -.02em;
+  color: #1f2b22;
+}
+
+/* ---------- Grid (last row is centred when it is not full) ---------- */
+.sx-sv__grid {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: var(--s-gap);
+  margin-top: clamp(32px, 4vw, 56px);
+}
+.sx-sv__item { flex: 0 1 calc((100% - 2 * var(--s-gap)) / 3); min-width: 0; display: flex; }
+
+/* ---------- Card ---------- */
+.sx-sv__card {
+  --mx: 50%; --my: 0%;
+  position: relative; display: flex; flex-direction: column; width: 100%;
+  background: var(--tone, var(--s-sage));
+  border: 1px solid rgba(31, 45, 34, .08);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(31, 45, 34, .04), 0 8px 22px rgba(31, 45, 34, .06);
+  transition: transform .5s cubic-bezier(.2, .8, .2, 1), box-shadow .5s ease, border-color .4s ease;
+}
+
+/* ---------- Card colours: sage / blush / deep sage (never cream).
+   Patterns are chosen per layout so no two cards that touch (side by side or above/below) share a colour. */
+.sx-sv__item { --tone: #B8CFB3; }                                   /* default = sage */
+/* phone + tablet (1-2 columns): sage, blush, deep, sage, blush, deep ... */
+.sx-sv__item:nth-child(3n+1) { --tone: #B8CFB3; }
+.sx-sv__item:nth-child(3n+2) { --tone: #F6E2E9; }
+.sx-sv__item:nth-child(3n+3) { --tone: #84A282; }
+/* desktop (3 columns): every row shifts by one, so columns never repeat either */
+@media (min-width: 992px) {
+  .sx-sv__item:nth-child(9n+1) { --tone: #B8CFB3; }
+  .sx-sv__item:nth-child(9n+2) { --tone: #F6E2E9; }
+  .sx-sv__item:nth-child(9n+3) { --tone: #84A282; }
+  .sx-sv__item:nth-child(9n+4) { --tone: #F6E2E9; }
+  .sx-sv__item:nth-child(9n+5) { --tone: #84A282; }
+  .sx-sv__item:nth-child(9n+6) { --tone: #B8CFB3; }
+  .sx-sv__item:nth-child(9n+7) { --tone: #84A282; }
+  .sx-sv__item:nth-child(9n+8) { --tone: #B8CFB3; }
+  .sx-sv__item:nth-child(9n+9) { --tone: #F6E2E9; }
+}
+
+.sx-sv__card::before {                       /* soft light that follows the pointer */
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0;
+  background: radial-gradient(420px circle at var(--mx) var(--my), rgba(255, 255, 255, .38), transparent 60%);
+  transition: opacity .4s ease;
+}
+.sx-sv__card:hover {
+  transform: translateY(-10px);
+  border-color: rgba(31, 45, 34, .22);
+  box-shadow: 0 4px 10px rgba(31, 45, 34, .06), 0 26px 50px rgba(31, 45, 34, .18);
+}
+.sx-sv__card:hover::before { opacity: 1; }
+
+/* image / placeholder tile (a soft cream tint on top of the card colour) */
+.sx-sv__media { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: rgba(254, 250, 243, .42); }
+.sx-sv__media img {
+  display: block; width: 100%; height: 100%; object-fit: cover;
+  transition: transform 1s cubic-bezier(.2, .8, .2, 1);
+}
+.sx-sv__card:hover .sx-sv__media img { transform: scale(1.08); }
+
+/* placeholder icon (no image / image missing) */
+.sx-sv__ph { position: absolute; inset: 0; display: grid; place-items: center; color: rgba(31, 45, 34, .55); transition: transform .6s cubic-bezier(.2, .8, .2, 1); }
+.sx-sv__ph svg { width: 54px; height: 54px; }
+.sx-sv__media.has-img:not(.is-empty) .sx-sv__ph { display: none; }
+.sx-sv__card:hover .sx-sv__ph { transform: scale(1.12) rotate(-4deg); }
+
+/* number pill */
+.sx-sv__num {
+  position: absolute; left: 14px; top: 14px; z-index: 3;
+  padding: 6px 12px; border-radius: 999px;
+  background: rgba(255, 255, 255, .88); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  font: 700 .78rem/1 Outfit, Inter, system-ui, sans-serif; letter-spacing: .08em; color: #4d6b4f;
+  transition: background .4s ease, color .4s ease;
+}
+.sx-sv__card:hover .sx-sv__num { background: var(--s-ink); color: #fff; }
+
+/* text */
+.sx-sv__body { padding: 22px 24px 28px; flex: 1; }
+.sx-sv__tag { display: block; margin-bottom: 8px; font: 700 .72rem/1.2 Inter, system-ui, sans-serif; letter-spacing: .18em; text-transform: uppercase; color: #2f4a30; }
+.sx-sv__title { margin: 0 0 10px; color: var(--s-ink); font: 700 clamp(1.15rem, 1.5vw, 1.35rem)/1.25 Outfit, Inter, system-ui, sans-serif; letter-spacing: -.01em; transition: color .35s ease; }
+.sx-sv__card:hover .sx-sv__title { color: #000; }
+.sx-sv__text { margin: 0; color: #2c3a2f; font: 400 .97rem/1.7 Inter, system-ui, sans-serif; }
+
+/* accent bar that grows on hover */
+.sx-sv__bar { position: absolute; left: 0; bottom: 0; height: 4px; width: 100%; background: var(--s-ink); transform: scaleX(0); transform-origin: left; transition: transform .6s cubic-bezier(.2, .8, .2, 1); }
+.sx-sv__card:hover .sx-sv__bar { transform: scaleX(1); }
+
+/* ---------- Entrance (armed only when sasa-services.js runs, so nothing can stay hidden) ---------- */
+.sx-sv.is-armed .sx-sv__item { opacity: 0; transform: translateY(36px) scale(.98); }
+.sx-sv.is-armed .sx-sv__item.is-in {
+  opacity: 1; transform: none;
+  transition: opacity .8s ease calc(var(--i, 0) * 110ms), transform .9s cubic-bezier(.2, .8, .2, 1) calc(var(--i, 0) * 110ms);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 991px) {
+  .sx-sv__item { flex-basis: calc((100% - var(--s-gap)) / 2); }
+}
+@media (max-width: 575px) {
+  .sx-sv__item { flex-basis: 100%; }
+  .sx-sv__body { padding: 18px 20px 24px; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .sx-sv.is-armed .sx-sv__item { opacity: 1; transform: none; transition: none; }
+  .sx-sv__card, .sx-sv__media img, .sx-sv__ph, .sx-sv__bar { transition: none; }
+  .sx-sv__card:hover { transform: none; }
+}
+/* Touch screens have no hover: keep the card calm */
+@media (hover: none) { .sx-sv__card:hover { transform: none; } .sx-sv__card::before { display: none; } }

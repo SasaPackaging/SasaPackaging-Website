@@ -32,6 +32,7 @@
       href="{{ url('/') }}/public/assets/main/css/sasa-premium.css"
       rel="stylesheet"
     />
+    <link href="{{ url('/') }}/public/assets/main/css/sasa-nav.css" rel="stylesheet">
 	<link href="{{ url('/') }}/public/assets/main/css/sasa-luxe.css" rel="stylesheet">
 
     <!-- <link rel="preconnect" href="https://fonts.googleapis.com"> -->

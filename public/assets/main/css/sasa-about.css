@@ -1,0 +1,127 @@
+/* SASA Packaging — About section (v1)
+   Left: text.  Right: self-playing office video in a soft frame with colour blocks behind it.
+   Palette: blush #F6E2E9 · cream #FEFAF3 · sage #B8CFB3 · deep sage #84A282
+   Load AFTER sasa-ui / sasa-premium / tailwind-generated. */
+
+.sx-ab {
+  --a-blush: #F6E2E9;
+  --a-cream: #FEFAF3;
+  --a-sage: #B8CFB3;
+  --a-deep: #84A282;
+  --a-ink: #1f2b22;
+  --a-r: 22px;
+  position: relative;
+  overflow-x: clip;
+  background: var(--a-cream);
+  padding-top: clamp(56px, 8vw, 110px);
+  padding-bottom: clamp(56px, 8vw, 110px);
+}
+
+/* ---------- Layout ---------- */
+.sx-ab__grid {
+  display: grid;
+  grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+  gap: clamp(36px, 6vw, 96px);
+  align-items: center;
+}
+.sx-ab__grid--solo { grid-template-columns: minmax(0, 46rem); }
+
+/* Desktop: video on the LEFT, text on the RIGHT (on phones the text stays first) */
+@media (min-width: 992px) {
+  .sx-ab__grid:not(.sx-ab__grid--solo) { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); }
+  .sx-ab__grid:not(.sx-ab__grid--solo) .sx-ab__media { order: -1; }
+}
+
+/* ---------- Text ---------- */
+.sx-ab .sx-eyebrow {
+  display: inline-flex; align-items: center; gap: 12px; margin: 0 0 16px;
+  font: 700 .8rem/1.2 Inter, system-ui, sans-serif; letter-spacing: .2em; text-transform: uppercase; color: #4d6b4f;
+}
+.sx-ab .sx-eyebrow::before { content: ""; width: 34px; height: 2px; background: var(--a-deep); border-radius: 2px; }
+.sx-ab .sx-ab__title {
+  margin: 0 0 20px; color: var(--a-ink);
+  font-family: Outfit, Inter, system-ui, sans-serif; font-weight: 700;
+  font-size: clamp(2rem, 3.6vw, 3.1rem); line-height: 1.12; letter-spacing: -.02em;
+}
+.sx-ab .sx-ab__prose { color: #425246; font: 400 clamp(1rem, 1.2vw, 1.0625rem)/1.85 Inter, system-ui, sans-serif; }
+.sx-ab .sx-ab__prose p { margin: 0 0 1em; }
+.sx-ab .sx-ab__prose > :last-child { margin-bottom: 0; }
+.sx-ab .sx-ab__prose ul { margin: 0 0 1em; padding-left: 1.2em; }
+.sx-ab .sx-ab__prose li { margin-bottom: .4em; }
+.sx-ab .sx-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+
+/* ---------- Media ---------- */
+.sx-ab__media { position: relative; }
+.sx-ab__media::before,
+.sx-ab__media::after {                      /* colour blocks behind the frame */
+  content: ""; position: absolute; z-index: 0; border-radius: var(--a-r);
+  transition: transform 1.2s cubic-bezier(.2, .8, .2, 1) .25s, opacity 1s ease .25s;
+}
+.sx-ab__media::before { left: -20px; bottom: -20px; width: 56%; height: 56%; background: var(--a-blush); }
+.sx-ab__media::after  { right: -20px; top: -20px; width: 38%; height: 38%; background: var(--a-sage); opacity: .85; }
+
+.sx-ab__frame {
+  position: relative; z-index: 1;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--a-r);
+  overflow: hidden;
+  background: linear-gradient(135deg, #eef4ec, var(--a-blush));
+  border: 2px solid var(--a-sage);
+  box-sizing: border-box;
+  transform: translateZ(0);                 /* keeps the rounded clip on the video in Safari */
+}
+.sx-ab__poster, .sx-ab__video, .sx-ab__yt {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
+.sx-ab__poster { z-index: 1; }
+.sx-ab__video, .sx-ab__yt { z-index: 2; opacity: 0; transition: opacity .9s ease; }
+.sx-ab__frame.is-playing .sx-ab__video,
+.sx-ab__frame.is-playing .sx-ab__yt { opacity: 1; }
+
+/* YouTube iframe: 16:9 player cropped to fill the frame, edges pushed out of view */
+.sx-ab__yt iframe {
+  position: absolute; top: 50%; left: 50%;
+  width: 100%; height: 100%;
+  border: 0; pointer-events: none;
+  transform: translate(-50%, -50%) scale(1.28);
+}
+.sx-ab__shield { position: absolute; inset: 0; z-index: 3; }
+
+/* ---------- Entrance (only armed once sasa-about.js is running, so nothing can stay hidden) ---------- */
+.sx-ab.is-armed .sx-ab__rv { opacity: 0; transform: translateY(30px); }
+.sx-ab.is-armed.is-in .sx-ab__rv {
+  opacity: 1; transform: none;
+  transition: opacity .8s ease var(--d, 0s), transform .9s cubic-bezier(.2, .8, .2, 1) var(--d, 0s);
+}
+.sx-ab.is-armed .sx-ab__frame { opacity: 0; transform: scale(1.06); clip-path: inset(9% round var(--a-r)); }
+.sx-ab.is-armed.is-in .sx-ab__frame {
+  opacity: 1; transform: none; clip-path: inset(0 round var(--a-r));
+  transition: opacity .9s ease .1s, transform 1.2s cubic-bezier(.2, .8, .2, 1) .1s, clip-path 1.2s cubic-bezier(.2, .8, .2, 1) .1s;
+}
+.sx-ab.is-armed .sx-ab__media::before { opacity: 0; transform: translate(-26px, 26px); }
+.sx-ab.is-armed .sx-ab__media::after  { opacity: 0; transform: translate(26px, -26px); }
+.sx-ab.is-armed.is-in .sx-ab__media::before { opacity: 1; transform: none; }
+.sx-ab.is-armed.is-in .sx-ab__media::after  { opacity: .85; transform: none; }
+
+/* ---------- Secondary block (existing split-block) spacing ---------- */
+.sx-ab .sx-more { margin-top: clamp(56px, 8vw, 104px); padding-top: clamp(40px, 6vw, 80px); border-top: 1px solid #e4e9df; }
+
+/* ---------- Tablet / mobile ---------- */
+@media (max-width: 991px) {
+  .sx-ab__grid { grid-template-columns: minmax(0, 1fr); }
+  .sx-ab__media { margin: 0 14px 14px 0; }
+  .sx-ab__media::before { left: -14px; bottom: -14px; }
+  .sx-ab__media::after  { right: -14px; top: -14px; }
+}
+@media (max-width: 575px) {
+  .sx-ab__frame { aspect-ratio: 4 / 3; }
+  .sx-ab__yt iframe { transform: translate(-50%, -50%) scale(1.5); }
+  .sx-ab { --a-r: 18px; }
+}
+
+/* ---------- Reduced motion: no entrance effects ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .sx-ab.is-armed .sx-ab__rv, .sx-ab.is-armed .sx-ab__frame,
+  .sx-ab.is-armed .sx-ab__media::before, .sx-ab.is-armed .sx-ab__media::after { opacity: 1; transform: none; clip-path: none; transition: none; }
+  .sx-ab.is-armed .sx-ab__media::after { opacity: .85; }
+}

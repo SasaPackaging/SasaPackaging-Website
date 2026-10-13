@@ -62,7 +62,7 @@ return [
         'cta_label'   => 'More About Us',
         'cta_link'    => '/about-us.html',
         'video_url'   => 'https://www.youtube.com/embed/f2GGCXRq9iw',
-        'video_title' => 'SASA Packaging video',
+        'video_title' => 'Where Ideas Takes Shape',
     ],
 
     // Numbers are counted from the database automatically.

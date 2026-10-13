@@ -38,11 +38,16 @@
 	     When navbar, footer and every section are converted to Tailwind, delete both lines. --}}
 	<link href="{{ url('/public/assets/main/css/sasa-ui.css') }}" rel="stylesheet">
 	<link href="{{ url('/public/assets/main/css/sasa-premium.css') }}" rel="stylesheet">
+	<link href="{{ url('/') }}/public/assets/main/css/sasa-nav.css" rel="stylesheet">
 
 	{{-- Tailwind (built with: npm run build:css) --}}
 	<link href="{{ url('/public/assets/main/css/tailwind-generated.css') }}" rel="stylesheet">
 		{{-- Hero slider look (must stay AFTER the css above) --}}
 	<link href="{{ url('/public/assets/main/css/sasa-hero.css') }}?v=4" rel="stylesheet">
+	<link href="{{ url('/public/assets/main/css/sasa-about.css') }}?v=1" rel="stylesheet">
+	<link href="{{ url('/public/assets/main/css/sasa-values.css') }}?v=1" rel="stylesheet">
+	<link href="{{ url('/public/assets/main/css/sasa-services.css') }}?v=2" rel="stylesheet">
+	<link href="{{ url('/public/assets/main/css/sasa-stats.css') }}?v=1" rel="stylesheet">
 
 	@section('customstyle')
 	@show
@@ -70,6 +75,10 @@
 	</script>
 	<script src="{{ url('/public/assets/main/js/sasa-premium.js') }}"></script>
 	<script src="{{ url('/public/assets/main/js/sasa-hero.js') }}?v=4"></script>
+	<script src="{{ url('/public/assets/main/js/sasa-about.js') }}?v=2"></script>
+	<script src="{{ url('/public/assets/main/js/sasa-values.js') }}?v=1"></script>
+	<script src="{{ url('/public/assets/main/js/sasa-services.js') }}?v=1"></script>
+	<script src="{{ url('/public/assets/main/js/sasa-stats.js') }}?v=1"></script>
 	<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 	@section('customscript')

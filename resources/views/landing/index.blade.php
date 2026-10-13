@@ -65,10 +65,10 @@ $sx_rich = function ($text) {
 
 @include('landing.hero')
 @include('landing.about')
-@include('landing.stats')
-@include('landing.services')
-@include('landing.lamination')
 @include('landing.values')
+@include('landing.services')
+@include('landing.stats')
+@include('landing.lamination')
 @include('landing.products')
 @include('landing.machines')
 @include('landing.certifications')

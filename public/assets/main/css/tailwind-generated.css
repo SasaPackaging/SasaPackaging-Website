@@ -140,6 +140,14 @@
   }
 }
 
+.visible {
+  visibility: visible
+}
+
+.invisible {
+  visibility: hidden
+}
+
 .collapse {
   visibility: collapse
 }
@@ -180,12 +188,20 @@
   display: table
 }
 
+.grid {
+  display: grid
+}
+
 .contents {
   display: contents
 }
 
 .hidden {
   display: none
+}
+
+.resize {
+  resize: both
 }
 
 .border {
