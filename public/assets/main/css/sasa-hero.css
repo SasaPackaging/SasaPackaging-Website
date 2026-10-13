@@ -40,19 +40,19 @@
 .sx-hero .sx-hs.is-leaving { visibility: visible; opacity: 1; }
 .sx-hero .sx-hs .sx-hs__content { position: static; max-width: 40rem; }
 
-.sx-hero .sx-hs .sx-hs__content > * { opacity: 0; transform: translateY(26px); }
-.sx-hero .sx-hs.is-active .sx-hs__content > * { animation: sxRise .85s cubic-bezier(.2, .7, .2, 1) both; }
-.sx-hero .sx-hs.is-active .sx-hs__content > :nth-child(1) { animation-delay: .05s; }
-.sx-hero .sx-hs.is-active .sx-hs__content > :nth-child(2) { animation-delay: .15s; }
-.sx-hero .sx-hs.is-active .sx-hs__content > :nth-child(3) { animation-delay: .25s; }
-.sx-hero .sx-hs.is-active .sx-hs__content > :nth-child(4) { animation-delay: .35s; }
-@keyframes sxRise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+.sx-hero .sx-hs .sx-hs__content > * { opacity: 0; transform: translateX(-42px); }
+.sx-hero .sx-hs.is-active .sx-hs__content > * { animation: sxRise .7s cubic-bezier(.2, .8, .2, 1) both; }
+.sx-hero .sx-hs.is-active .sx-hs__content > :nth-child(1) { animation-delay: .00s; }
+.sx-hero .sx-hs.is-active .sx-hs__content > :nth-child(2) { animation-delay: .10s; }
+.sx-hero .sx-hs.is-active .sx-hs__content > :nth-child(3) { animation-delay: .20s; }
+.sx-hero .sx-hs.is-active .sx-hs__content > :nth-child(4) { animation-delay: .30s; }
+@keyframes sxRise { from { opacity: 0; transform: translateX(-42px); } to { opacity: 1; transform: none; } }
 
-.sx-hero .sx-hs.is-leaving .sx-hs__content > * { opacity: 1; transform: none; animation: sxFall .45s ease-in both; }
-.sx-hero .sx-hs.is-leaving .sx-hs__content > :nth-child(2) { animation-delay: .04s; }
-.sx-hero .sx-hs.is-leaving .sx-hs__content > :nth-child(3) { animation-delay: .08s; }
-.sx-hero .sx-hs.is-leaving .sx-hs__content > :nth-child(4) { animation-delay: .12s; }
-@keyframes sxFall { to { opacity: 0; transform: translateY(-18px); } }
+.sx-hero .sx-hs.is-leaving .sx-hs__content > * { opacity: 1; transform: none; animation: sxFall .35s ease-in both; }
+.sx-hero .sx-hs.is-leaving .sx-hs__content > :nth-child(2) { animation-delay: .03s; }
+.sx-hero .sx-hs.is-leaving .sx-hs__content > :nth-child(3) { animation-delay: .06s; }
+.sx-hero .sx-hs.is-leaving .sx-hs__content > :nth-child(4) { animation-delay: .09s; }
+@keyframes sxFall { to { opacity: 0; transform: translateX(42px); } }
 
 .sx-hero .sx-hs__content h1,
 .sx-hero .sx-hs__content h2 { color: var(--h-ink); }

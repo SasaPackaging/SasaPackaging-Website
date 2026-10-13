@@ -13,7 +13,7 @@
 
   function initHero(el) {
     var slides = [].slice.call(el.querySelectorAll(".sx-hs"));
-    var OUT = 520; // ms – text exit time (matches sxFall in the css)
+    var OUT = 420; // ms – text exit time (a little longer than sxFall in the css)
 
     /* ---- gallery: pause when off-screen ---- */
     if ("IntersectionObserver" in window) {
@@ -30,7 +30,7 @@
       return;
     }
 
-    var interval = parseInt(el.getAttribute("data-interval"), 10) || 6500;
+    var interval = parseInt(el.getAttribute("data-interval"), 10) || 1000;
     var index = 0,
       timer = null,
       busy = false,

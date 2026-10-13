@@ -108,7 +108,7 @@
       return;
     }
 
-    var interval = parseInt(el.getAttribute("data-interval"), 10) || 5000;
+    var interval = parseInt(el.getAttribute("data-interval"), 10) || 1000;
     var index = 0,
       timer = null,
       busy = false,
