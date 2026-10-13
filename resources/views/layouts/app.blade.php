@@ -1,3 +1,4 @@
+<!-- layouts/app.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,6 +41,8 @@
 
 	{{-- Tailwind (built with: npm run build:css) --}}
 	<link href="{{ url('/public/assets/main/css/tailwind-generated.css') }}" rel="stylesheet">
+		{{-- Hero slider look (must stay AFTER the css above) --}}
+	<link href="{{ url('/public/assets/main/css/sasa-hero.css') }}?v=4" rel="stylesheet">
 
 	@section('customstyle')
 	@show
@@ -66,6 +69,7 @@
 		var path = '{{ url('/') }}';
 	</script>
 	<script src="{{ url('/public/assets/main/js/sasa-premium.js') }}"></script>
+	<script src="{{ url('/public/assets/main/js/sasa-hero.js') }}?v=4"></script>
 	<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 	@section('customscript')

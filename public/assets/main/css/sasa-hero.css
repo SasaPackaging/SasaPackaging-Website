@@ -1,0 +1,113 @@
+/* SASA Packaging — Hero slider look & motion  (v3)
+   Load AFTER your main premium css. Palette:
+   blush #F6E2E9 · cream #FEFAF3 · sage #B8CFB3 · deep sage #84A282
+   Slide backgrounds: 1 cream · 2 blush · 3 sage · 4 deep sage (then repeats).
+   Transition: a two-colour curtain sweeps across, the slide changes under it. */
+
+.sx-hero {
+  --h-blush: #F6E2E9;
+  --h-cream: #FEFAF3;
+  --h-sage: #B8CFB3;
+  --h-deep: #84A282;
+  --h-ink: #1f2b22;
+  --h-sweep: 1.1s;                             /* keep in sync with SWEEP in the JS */
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  background: var(--h-cream);
+}
+
+/* ---------- One solid colour per slide (forced, so old CSS cannot override) ---------- */
+.sx-hero .sx-slide--c1 { --tone: #FEFAF3; --veil: 254,250,243; }
+.sx-hero .sx-slide--c2 { --tone: #F6E2E9; --veil: 246,226,233; }
+.sx-hero .sx-slide--c3 { --tone: #B8CFB3; --veil: 184,207,179; }
+.sx-hero .sx-slide--c4 { --tone: #84A282; --veil: 132,162,130; }
+
+.sx-hero .sx-slide {
+  position: relative !important; inset: auto !important; grid-area: 1 / 1;
+  background: var(--tone) !important;
+  opacity: 0; visibility: hidden; transform: none; clip-path: none;
+  transition: none; z-index: 0;
+}
+.sx-hero .sx-slide.is-active { opacity: 1; visibility: visible; z-index: 1; }
+
+.sx-hero .sx-slide .sx-slide__bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.sx-hero .sx-slide .sx-slide__bg--art { background: var(--tone) !important; }
+
+/* photo slides: veil in the slide's own colour so text stays readable */
+.sx-hero .sx-slide__bg:not(.sx-slide__bg--art)::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(var(--veil), .95) 0%, rgba(var(--veil), .7) 42%, rgba(var(--veil), 0) 80%);
+}
+.sx-hero .sx-slide.is-active .sx-slide__bg:not(.sx-slide__bg--art) { animation: sxZoom 7s ease-out both; }
+@keyframes sxZoom { from { transform: scale(1.07); } to { transform: scale(1); } }
+.sx-hero .sx-slide.is-active .sx-slide__art { animation: sxFloat 6s ease-in-out .8s infinite alternate; }
+@keyframes sxFloat { from { transform: translateY(0); } to { transform: translateY(-12px); } }
+
+/* ---------- The curtain ---------- */
+.sx-sweep { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.sx-sweep::before, .sx-sweep::after {
+  content: ""; position: absolute; inset: 0;
+  clip-path: inset(0 0 0 100%);                /* parked off-screen on the right */
+}
+.sx-sweep::before { z-index: 2; background: var(--a); }   /* leading colour  */
+.sx-sweep::after  { z-index: 1; background: var(--b); }   /* trailing colour */
+
+.sx-sweep.is-run::before { animation: sxCurtain var(--h-sweep) cubic-bezier(.7, 0, .25, 1) both; }
+.sx-sweep.is-run::after  { animation: sxCurtain var(--h-sweep) cubic-bezier(.7, 0, .25, 1) .12s both; }
+@keyframes sxCurtain {
+  0%   { clip-path: inset(0 0 0 100%); }
+  42%  { clip-path: inset(0 0 0 0); }
+  58%  { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(0 100% 0 0); }
+}
+/* curtain colours depend on the slide it is revealing */
+.sx-sweep--to1 { --a: #B8CFB3; --b: #84A282; }   /* into cream  */
+.sx-sweep--to2 { --a: #84A282; --b: #B8CFB3; }   /* into blush  */
+.sx-sweep--to3 { --a: #F6E2E9; --b: #84A282; }   /* into sage   */
+.sx-sweep--to4 { --a: #FEFAF3; --b: #F6E2E9; }   /* into deep sage */
+
+/* ---------- Text: rises right after the slide is swapped ---------- */
+.sx-hero .sx-slide__content > * { opacity: 0; transform: translateY(34px); }
+.sx-hero .sx-slide.is-active .sx-slide__content > * { animation: sxRise .7s cubic-bezier(.2, .7, .2, 1) both; }
+.sx-hero .sx-slide.is-active .sx-slide__content > :nth-child(1) { animation-delay: .05s; }
+.sx-hero .sx-slide.is-active .sx-slide__content > :nth-child(2) { animation-delay: .14s; }
+.sx-hero .sx-slide.is-active .sx-slide__content > :nth-child(3) { animation-delay: .23s; }
+.sx-hero .sx-slide.is-active .sx-slide__content > :nth-child(4) { animation-delay: .32s; }
+.sx-hero .sx-slide.is-active .sx-slide__content > :nth-child(5) { animation-delay: .41s; }
+@keyframes sxRise { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: none; } }
+/* the first slide on page load gets a short delay instead, so the page settles first */
+.sx-hero:not(.is-started) .sx-slide.is-active .sx-slide__content > * { animation-duration: .8s; }
+
+/* ---------- Text + button colours per background ---------- */
+.sx-hero .sx-slide__content h1,
+.sx-hero .sx-slide__content h2 { color: var(--h-ink); }
+.sx-hero .sx-slide__content p  { color: #3d4d41; }
+.sx-hero .sx-eyebrow           { color: #4d6b4c; }
+
+.sx-hero .sx-slide--c3 .sx-slide__content p { color: #2c3a2f; }
+.sx-hero .sx-slide--c3 .sx-eyebrow          { color: #2f4a30; }
+.sx-hero .sx-slide--c4 .sx-slide__content p { color: #17211a; }
+.sx-hero .sx-slide--c4 .sx-eyebrow          { color: #17211a; }
+.sx-hero .sx-slide--c3 .sx-btn--primary,
+.sx-hero .sx-slide--c4 .sx-btn--primary {
+  background: var(--h-ink); color: var(--h-cream); box-shadow: 0 10px 24px rgba(31, 43, 34, .25);
+}
+.sx-hero .sx-slide--c3 .sx-btn--primary:hover,
+.sx-hero .sx-slide--c4 .sx-btn--primary:hover { background: #0f1711; }
+
+/* ---------- Old controls hidden ---------- */
+.sx-hero__controls, .sx-dots, .sx-pause, .sx-arrows, .sx-arrow { display: none !important; }
+
+/* ---------- No JavaScript ---------- */
+html:not(.sx-js) .sx-hero .sx-slide:first-child { opacity: 1; visibility: visible; }
+html:not(.sx-js) .sx-hero .sx-slide:first-child .sx-slide__content > * { opacity: 1; transform: none; }
+
+/* ---------- Reduced motion: simple fade, no curtain ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .sx-sweep { display: none; }
+  .sx-hero .sx-slide { transition: opacity .5s ease; }
+  .sx-hero .sx-slide.is-active .sx-slide__content > * { animation: none; opacity: 1; transform: none; }
+  .sx-hero .sx-slide.is-active .sx-slide__art,
+  .sx-hero .sx-slide.is-active .sx-slide__bg { animation: none; }
+}
