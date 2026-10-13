@@ -61,8 +61,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <script>
-      var path_url = "{{ url(" / ") }}";
-      var path = "{{ url(" / ") }}";
+      var path_url = "{{ url('/') }}";
+      var path = "{{ url('/') }}";
     </script>
 
     @section('customstyle') @show

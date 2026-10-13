@@ -1,6 +1,8 @@
-/* SASA Packaging — Hero slider (standalone, automatic, no dots / arrows).
-   Load AFTER sasa-premium.js. It only touches <section data-sx-hero>,
-   so the old slider code inside sasa-premium.js is simply never used. */
+/* SASA Packaging — Hero behaviour (standalone).
+   Load AFTER sasa-premium.js. Only touches <section data-sx-hero>.
+   1) Text slider: auto-advances, no dots/arrows. Only the text moves.
+   2) Pauses the gallery animation while the hero is off-screen (saves CPU/battery).
+   The gallery itself is pure CSS – no JavaScript is needed for it to move. */
 (function () {
   "use strict";
   var doc = document;
@@ -9,71 +11,67 @@
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   doc.documentElement.classList.add("sx-js");
 
-  function initSlider(el) {
-    var SWEEP = 1100; // ms – must match --h-sweep (1.1s) in sasa-hero.css
-    var SWAP_AT = 0.5; // swap slides when the curtain fully covers (50%)
-    var slides = [].slice.call(el.querySelectorAll(".sx-slide"));
-    if (!slides.length) return;
+  function initHero(el) {
+    var slides = [].slice.call(el.querySelectorAll(".sx-hs"));
+    var OUT = 520; // ms – text exit time (matches sxFall in the css)
 
-    // give every slide its own colour tone (1-4), whatever the markup says
-    slides.forEach(function (s, i) {
-      s.classList.remove(
-        "sx-slide--c1",
-        "sx-slide--c2",
-        "sx-slide--c3",
-        "sx-slide--c4",
-      );
-      s.classList.add("sx-slide--c" + ((i % 4) + 1));
-    });
+    /* ---- gallery: pause when off-screen ---- */
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(
+        function (entries) {
+          el.classList.toggle("is-offscreen", !entries[0].isIntersecting);
+        },
+        { threshold: 0 },
+      ).observe(el);
+    }
+
     if (slides.length < 2) {
-      slides[0].classList.add("is-active");
+      if (slides[0]) slides[0].classList.add("is-active");
       return;
     }
 
-    var interval = parseInt(el.getAttribute("data-interval"), 10) || 5000;
+    var interval = parseInt(el.getAttribute("data-interval"), 10) || 6500;
     var index = 0,
       timer = null,
       busy = false,
       focusPaused = false;
 
-    var sweep = doc.createElement("div");
-    sweep.className = "sx-sweep";
-    sweep.setAttribute("aria-hidden", "true");
-    el.appendChild(sweep);
-
-    function show(i) {
+    function setA11y(i) {
       slides.forEach(function (s, k) {
         var on = k === i;
-        s.classList.toggle("is-active", on);
         s.setAttribute("aria-hidden", on ? "false" : "true");
         s.querySelectorAll("a,button").forEach(function (n) {
           n.tabIndex = on ? 0 : -1;
         });
       });
-      index = i;
     }
-    show(0);
+    slides.forEach(function (s) {
+      s.classList.remove("is-active", "is-leaving");
+    });
+    slides[0].classList.add("is-active");
+    setA11y(0);
 
     function go(next) {
       if (busy || next === index) return;
       busy = true;
+      var prev = slides[index],
+        cur = slides[next];
+      index = next;
+      setA11y(next);
+
       if (reduceMotion) {
-        show(next);
+        prev.classList.remove("is-active");
+        cur.classList.add("is-active");
         busy = false;
         return;
       }
-
-      sweep.className = "sx-sweep";
-      void sweep.offsetWidth; // restart the animation
-      sweep.className = "sx-sweep is-run sx-sweep--to" + ((next % 4) + 1);
-
+      prev.classList.remove("is-active");
+      prev.classList.add("is-leaving"); // old text lifts away
       setTimeout(function () {
-        show(next);
-      }, SWEEP * SWAP_AT);
-      setTimeout(function () {
-        sweep.className = "sx-sweep";
+        prev.classList.remove("is-leaving");
+        cur.classList.add("is-active"); // new text rises in
         busy = false;
-      }, SWEEP + 50);
+      }, OUT);
     }
     function nextSlide() {
       go((index + 1) % slides.length);
@@ -104,50 +102,11 @@
       if (doc.hidden) stop();
       else start();
     });
-
-    // optional swipe on touch screens
-    var sx = 0,
-      sy = 0,
-      tracking = false;
-    el.addEventListener(
-      "touchstart",
-      function (e) {
-        if (e.touches.length !== 1) return;
-        sx = e.touches[0].clientX;
-        sy = e.touches[0].clientY;
-        tracking = true;
-        stop();
-      },
-      { passive: true },
-    );
-    el.addEventListener(
-      "touchend",
-      function (e) {
-        if (!tracking) return;
-        tracking = false;
-        var t = e.changedTouches[0],
-          dx = t.clientX - sx,
-          dy = t.clientY - sy;
-        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3)
-          go((index + (dx < 0 ? 1 : slides.length - 1)) % slides.length);
-        start();
-      },
-      { passive: true },
-    );
-    el.addEventListener(
-      "touchcancel",
-      function () {
-        tracking = false;
-        start();
-      },
-      { passive: true },
-    );
-
     start();
   }
 
   function boot() {
-    doc.querySelectorAll("[data-sx-hero]").forEach(initSlider);
+    doc.querySelectorAll("[data-sx-hero]").forEach(initHero);
   }
   if (doc.readyState !== "loading") boot();
   else doc.addEventListener("DOMContentLoaded", boot);

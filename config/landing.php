@@ -19,28 +19,41 @@ return [
         'aria_label' => 'Featured highlights',
         'more_label' => 'Learn more', // button text when a banner has none
 
+
+        'gallery' => [
+            'dir'     => 'assets/main/images/hero',
+            'scan'    => true,                 // false = use only the 'files' list, in that order
+            'files'   => ['a.png', 'b.png', 'c.png', 'd.png', 'e.png', 'f.png', 'g.png', 'h.png'],
+            'columns' => 4,
+        ],
         // Shown ONLY when the banners table has no active banner.
         'fallback_slides' => [
             [
                 'tag'   => 'Packaging made purposeful',
                 'title' => 'Smarter packaging for products that matter.',
                 'text'  => 'Explore packaging solutions designed to protect your products and present your brand with confidence.',
-                'btn'   => 'Explore Products', 'link'  => '/products-and-services.html',
-                'btn2'  => 'Request a Quote',  'link2' => '/get-quote.html',
+                'btn'   => 'Explore Products',
+                'link'  => '/products-and-services.html',
+                'btn2'  => 'Request a Quote',
+                'link2' => '/get-quote.html',
             ],
             [
                 'tag'   => 'About SASA Packaging',
                 'title' => 'Learn who we are and how we work.',
                 'text'  => 'Discover our company, our values and the way we partner with our customers.',
-                'btn'   => 'About Us', 'link' => '/about-us.html',
-                'btn2'  => '',         'link2' => '',
+                'btn'   => 'About Us',
+                'link' => '/about-us.html',
+                'btn2'  => '',
+                'link2' => '',
             ],
             [
                 'tag'   => 'Our capabilities',
                 'title' => 'The machinery behind our packaging.',
                 'text'  => 'A closer look at the production capabilities that support our work.',
-                'btn'   => 'See Machines', 'link' => '#machines',
-                'btn2'  => '',             'link2' => '',
+                'btn'   => 'See Machines',
+                'link' => '#machines',
+                'btn2'  => '',
+                'link2' => '',
             ],
         ],
     ],
