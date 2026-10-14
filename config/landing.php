@@ -121,32 +121,51 @@ return [
         'items' => [],
     ],
 
+
+    /* In config/landing.php, REPLACE these four existing blocks with the ones below
+   (certifications, news, testimonials). Keep every other block as it is.
+   Then run:  php artisan config:clear                                              */
+
     'certifications' => [
-        'eyebrow'          => 'Quality & trust',
-        'title'            => 'Certifications',
-        'lead'             => 'Our quality documentation and certifications.',
-        'placeholder_count' => 4,
-        'placeholder_title' => 'Certificate logo',
-        'placeholder_text'  => 'Placeholder — add a verified certification',
+        'eyebrow'   => 'Quality & trust',
+        'title'     => 'Certified for confidence',
+        'lead'      => 'Standards we are proud to meet, behind every order we make.',
+        'hint'      => 'Tap a seal to celebrate',
+        'image_dir' => 'upload/certifications',   // logo files go in public/upload/certifications/
+        // Add as many as you like. image = optional logo file name. short = text inside the shield when there is no logo.
+        'items' => [
+            ['name' => 'ISO 9001 Certified', 'short' => 'ISO 9001', 'image' => '', 'note' => ''],
+            ['name' => 'FSSC Certified',     'short' => 'FSSC',     'image' => '', 'note' => ''],
+        ],
     ],
 
     'news' => [
-        'eyebrow'     => 'From SASA Packaging',
-        'title'       => 'News &amp; Events',
-        'lead'        => 'Company updates, industry events, and announcements.',
-        'limit'       => 3,
-        'empty_title' => 'Stay connected with SASA Packaging',
-        'empty_text'  => 'News stories and event highlights will be featured here when they are published.',
+        'eyebrow'       => 'From SASA Packaging',
+        'title'         => 'News &amp; Events',
+        'lead'          => 'Exhibitions, certifications and new openings, the latest from SASA Packaging.',
+        'limit'         => 3,
+        'topics'        => ['Exhibitions', 'Certifications', 'New openings'],
+        'ticker_label'  => 'News & Events',
+        'ticker_empty'  => 'No updates yet — exhibitions, certifications and new openings will be announced here.',
+        'empty_title'   => 'No updates yet',
+        'empty_text'    => 'Exhibitions we attend, certifications we earn and new openings will be announced right here. Stay tuned.',
     ],
 
     'testimonials' => [
         'eyebrow'     => 'Customer feedback',
         'title'       => 'Ratings &amp; Testimonials',
-        'empty_title' => 'Customer reviews coming soon',
-        'empty_text'  => 'Genuine feedback from our customers will be shared here.',
-        'partners_title' => 'Our Partners',
-        // Add only genuine feedback.
-        // Example: ['quote' => 'Real customer quote', 'name' => 'Customer name', 'role' => 'Company / role'],
+        'rating'      => 5,                              // 5 = five full stars (4.5 also works)
+        'rating_label' => 'Overall customer rating',
+        'placeholder_count' => 3,                         // open review slots shown until real reviews are added
+        'placeholder_name'  => 'Your customer\'s review',
+        'placeholder_text'  => 'Genuine feedback will appear here',
+        // Real reviews (the open slots disappear automatically). rating is optional (default 5).
+        // Example: ['quote' => 'Real customer quote', 'name' => 'Customer name', 'role' => 'Company / role', 'rating' => 5],
         'items' => [],
+
+        'partners_eyebrow'     => 'Our Partners',
+        'partners_heading'     => 'Brands that grow with us',
+        'partners_lead'        => 'We are proud to be the packaging partner behind businesses that care about quality.',
+        'partner_placeholder'  => 'Partner logo',
     ],
 ];

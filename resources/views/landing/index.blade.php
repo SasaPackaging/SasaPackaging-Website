@@ -63,7 +63,7 @@ $sx_rich = function ($text) {
 	return nl2br(strip_tags((string) $text, '<br><strong><em><b><i><span>'));
 };
 @endphp
-
+@include('landing.ticker')
 @include('landing.hero')
 @include('landing.about')
 @include('landing.values')

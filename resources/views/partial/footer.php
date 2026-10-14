@@ -20,6 +20,17 @@ $sx_email = $sx_get('CONTACT_EMAIL');
 $sx_phone = $sx_get('PHONE');
 $sx_phone2 = $sx_get('POBOX');
 $sx_address = $sx_get('ADDRESS');
+
+/* Logo: an .svg logo is placed inline so the white "SASA" letters can be recoloured to #84A282
+   (the red cube stays red). A .png logo is shown as a normal picture. */
+$sx_logo_path = base_path('public/assets/main/images/' . $sx_logo);
+$sx_logo_svg = '';
+if (substr($sx_logo, -4) === '.svg' && file_exists($sx_logo_path)) {
+	$sx_logo_svg = (string) file_get_contents($sx_logo_path);
+	$sx_logo_svg = preg_replace('/<\?xml.*?\?>/s', '', $sx_logo_svg);
+	$sx_logo_svg = preg_replace('/<!DOCTYPE.*?>/is', '', $sx_logo_svg);
+	$sx_logo_svg = trim($sx_logo_svg);
+}
 ?>
 
 <footer class="sx-footer">
@@ -27,7 +38,13 @@ $sx_address = $sx_get('ADDRESS');
 
 		<!-- Brand -->
 		<div class="sx-footer__brand">
-			<a class="sx-footer__logo" href="<?php echo URL::to('/'); ?>"><img src="<?= url('/') ?>/public/assets/main/images/<?= $sx_logo ?>" alt="<?= e($sx_site_name) ?>"></a>
+			<a class="sx-footer__logo" href="<?php echo URL::to('/'); ?>" aria-label="<?= e($sx_site_name) ?>">
+				<?php if ($sx_logo_svg !== '') { ?>
+					<?= $sx_logo_svg ?>
+				<?php } else { ?>
+					<img src="<?= url('/') ?>/public/assets/main/images/<?= $sx_logo ?>" alt="<?= e($sx_site_name) ?>">
+				<?php } ?>
+			</a>
 			<div class="sx-footer__about sx-prose"><?= $about_us['short_contents'] ?></div>
 			<ul class="sx-social">
 				<?php if ($sx_get('FACEBOOK') != '') { ?>
@@ -63,7 +80,7 @@ $sx_address = $sx_get('ADDRESS');
 				<?php foreach ($db_pages_footer as $row) { ?>
 					<li><a href="<?= $main_path ?>/<?= $row['slug'] ?>.html"><?= e($row['name']) ?></a></li>
 				<?php } ?>
-				<li><a href="<?= url('/') ?>#machines">Machines</a></li>
+				<li><a href="<?= url('/machines.html') ?>">Machines</a></li>
 			</ul>
 		</div>
 
@@ -109,9 +126,8 @@ $sx_address = $sx_get('ADDRESS');
 	</div>
 
 	<div class="sx-footer__bar">
-		<div class="sx-container">
+		<div class="sx-container" style="justify-content:center;text-align:center">
 			<div>Copyright &copy; <span><?= date('Y') ?></span> <?= e($sx_site_name) ?>. All Rights Reserved.</div>
-			<div>Designed By <a href="https://www.hubsol.ae" target="_blank" rel="noopener">HUBSOL</a></div>
 		</div>
 	</div>
 </footer>
@@ -120,3 +136,30 @@ $sx_address = $sx_get('ADDRESS');
 <button type="button" class="sx-totop" id="sxToTop" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 		<path d="m6 14 6-6 6 6" />
 	</svg></button>
+
+<style>
+	/* inline footer logo size */
+	.sx-footer__logo svg {
+		display: block;
+		height: clamp(64px, 6vw, 84px);
+		width: auto;
+		max-width: 100%;
+	}
+</style>
+<script>
+	/* Footer logo: every white part (the word "SASA") becomes #84A282; the red cube is not touched. */
+	(function() {
+		var svg = document.querySelector('.sx-footer__logo svg');
+		if (!svg) {
+			return;
+		}
+		var shapes = svg.querySelectorAll('path, polygon, polyline, rect, circle, ellipse');
+		for (var i = 0; i < shapes.length; i++) {
+			var f = window.getComputedStyle(shapes[i]).fill;
+			var m = f && f.match(/[\d.]+/g);
+			if (m && m.length >= 3 && +m[0] >= 235 && +m[1] >= 235 && +m[2] >= 235) {
+				shapes[i].style.fill = '#2b332a';
+			}
+		}
+	})();
+</script>
