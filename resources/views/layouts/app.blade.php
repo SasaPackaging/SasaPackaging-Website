@@ -48,6 +48,7 @@
 	<link href="{{ url('/public/assets/main/css/sasa-values.css') }}?v=1" rel="stylesheet">
 	<link href="{{ url('/public/assets/main/css/sasa-services.css') }}?v=2" rel="stylesheet">
 	<link href="{{ url('/public/assets/main/css/sasa-stats.css') }}?v=1" rel="stylesheet">
+	<link href="{{ url('/public/assets/main/css/sasa-lamination.css') }}?v=1" rel="stylesheet">
 
 	@section('customstyle')
 	@show

@@ -97,7 +97,7 @@ $sx_phone = $sx_get('PHONE');
 					</li>
 				<?php } ?>
 
-				<li class="sasa-machines-nav"><a href="<?= url('/') ?>#machines">Machines</a></li>
+				<li class="sasa-machines-nav<?= $slug == 'machines' ? ' is-active' : '' ?>"><a href="<?= url('/machines.html') ?>" <?= $slug == 'machines' ? ' aria-current="page"' : '' ?>>Machines</a></li>
 			</ul>
 
 			<!-- Mobile-only extras (search + quote + phone) -->

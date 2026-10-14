@@ -140,3 +140,20 @@
 }
 /* Touch screens have no hover: keep the card calm */
 @media (hover: none) { .sx-sv__card:hover { transform: none; } .sx-sv__card::before { display: none; } }
+
+
+/* APPEND to the END of public/assets/main/css/sasa-services.css */
+
+/* whole card is clickable: the title link stretches over the card */
+.sx-sv__link { color: inherit; text-decoration: none; }
+.sx-sv__link::after { content: ""; position: absolute; inset: 0; z-index: 4; }
+.sx-sv__link:focus-visible { outline: none; }
+.sx-sv__card:has(.sx-sv__link:focus-visible) { outline: 3px solid #1f2b22; outline-offset: -3px; }
+
+/* "Explore ->" cue */
+.sx-sv__more {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 16px;
+  font: 600 .92rem/1 Outfit, Inter, system-ui, sans-serif; color: #1f2b22;
+}
+.sx-sv__more svg { width: 16px; height: 16px; transition: transform .45s cubic-bezier(.2, .8, .2, 1); }
+.sx-sv__card:hover .sx-sv__more svg { transform: translateX(6px); }

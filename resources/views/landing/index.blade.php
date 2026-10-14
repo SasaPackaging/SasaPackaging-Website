@@ -1,3 +1,4 @@
+<!--landing/index.blade.php -->
 @extends('layouts.app')
 
 @section('customstyle')
@@ -70,7 +71,6 @@ $sx_rich = function ($text) {
 @include('landing.stats')
 @include('landing.lamination')
 @include('landing.products')
-@include('landing.machines')
 @include('landing.certifications')
 @include('landing.news')
 @include('landing.testimonials')

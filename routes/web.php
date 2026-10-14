@@ -11,18 +11,23 @@
 |
 */
 
-    $mystring =  $_SERVER['REQUEST_URI'] ?? '';
-	$findme   = 'index.php';
-	$pos = strpos($mystring, $findme);
-	if ($pos !== false) {
-		 $main_path = Config::get('app.url');
-		echo '<script>window.location= "'.$main_path.'"</script>';
-	}
-	
-	
+$mystring =  $_SERVER['REQUEST_URI'] ?? '';
+$findme   = 'index.php';
+$pos = strpos($mystring, $findme);
+if ($pos !== false) {
+	$main_path = Config::get('app.url');
+	echo '<script>window.location= "' . $main_path . '"</script>';
+}
+
+
 
 Route::get('/', 'WelcomeController@index');
-
+Route::get('/machines.html', function () {
+	return view('pages.machines', [
+		'title'       => 'Machines & Manufacturing | SASA Packaging',
+		'description' => 'The machinery and production capabilities behind our packaging solutions.',
+	]);
+});
 Route::post('/common/contact_process', 'CommonController@contact_process');
 Route::post('/common/processenq', 'CommonController@processenq');
 Route::post('/common/commentsubmit', 'CommonController@commentsubmit');
@@ -31,14 +36,14 @@ Route::post('/common/register_process', 'CommonController@register_process');
 Route::post('/save_career', 'CommonController@save_career');
 Route::post('/send_quote', 'CommonController@send_quote');
 
-Route::group(array('namespace' => 'Admin','prefix' => 'admin'), function() {
+Route::group(array('namespace' => 'Admin', 'prefix' => 'admin'), function () {
 	Route::get('/', 'AdminController@index');
 	Route::post('/login', 'AdminController@login');
 	Route::get('/logout', 'AdminController@logout');
 	Route::get('/dashboard', 'AdminController@dashboard');
 	Route::get('/profile', 'AdminController@profile');
 	Route::post('/update_profile', 'AdminController@update_profile');
-	
+
 	Route::get('/settings', 'SettingsController@index');
 	Route::post('/settings/update_setting', 'SettingsController@update_setting');
 	//------------------------------------------------------------------------------------
@@ -50,7 +55,7 @@ Route::group(array('namespace' => 'Admin','prefix' => 'admin'), function() {
 	Route::get('/banners/delete/{id}', 'BannersController@delete');
 	Route::post('/banners/status', 'BannersController@status');
 	//------------------------------------------------------------------------------------
-	
+
 	//------------------------------------------------------------------------------------
 	Route::get('/category', 'CategoryController@index');
 	Route::get('/category/index', 'CategoryController@index');
@@ -62,16 +67,16 @@ Route::group(array('namespace' => 'Admin','prefix' => 'admin'), function() {
 	Route::post('/category/status', 'CategoryController@status');
 	Route::post('/category/subcategory', 'CategoryController@subcategory');
 	Route::post('/category/statusfeatured', 'CategoryController@statusfeatured');
-	
+
 	//------------------------------------------------------------------------------------
-	
-	
-	
-	
+
+
+
+
 	//------------------------------------------------------------------------------------
-	
-	
-	
+
+
+
 	//------------------------------------------------------------------------------------
 	Route::get('/pages', 'PagesController@index');
 	Route::get('/pages/create', 'PagesController@create');
@@ -84,7 +89,7 @@ Route::group(array('namespace' => 'Admin','prefix' => 'admin'), function() {
 	Route::post('/pages/statusheader', 'PagesController@statusheader');
 	Route::post('/pages/statusquick', 'PagesController@statusquick');
 	//------------------------------------------------------------------------------------
-	
+
 	//------------------------------------------------------------------------------------
 	Route::get('/services', 'ServicesController@index');
 	Route::get('/services/create', 'ServicesController@create');
@@ -95,9 +100,9 @@ Route::group(array('namespace' => 'Admin','prefix' => 'admin'), function() {
 	Route::post('/services/status', 'ServicesController@status');
 	Route::post('/services/statusfooter', 'ServicesController@statusfooter');
 	Route::post('/services/statusfeatured', 'ServicesController@statusfeatured');
-	
+
 	//------------------------------------------------------------------------------------
-	
+
 	//------------------------------------------------------------------------------------
 	Route::get('/products', 'ProductsController@index');
 	Route::get('/products/create', 'ProductsController@create');
@@ -106,24 +111,24 @@ Route::group(array('namespace' => 'Admin','prefix' => 'admin'), function() {
 	Route::post('/products/edit_save', 'ProductsController@edit_save');
 	Route::get('/products/delete/{id}', 'ProductsController@delete');
 	Route::post('/products/status', 'ProductsController@status');
-	
+
 	Route::post('/products/statusfeatured', 'ProductsController@statusfeatured');
-	
-	
+
+
 	Route::get('/products/images/{id}', 'ProductsController@images');
 	Route::get('/products/createimage/{id}', 'ProductsController@createimage');
 	Route::post('/products/createimage_save', 'ProductsController@createimage_save');
 	Route::get('/products/imagedelete/{id}/{sid}', 'ProductsController@imagedelete');
-	
-	
+
+
 	Route::get('/products/ptypes/{id}', 'ProductsController@ptypes');
 	Route::get('/products/createtypes/{id}', 'ProductsController@createtypes');
 	Route::post('/products/createtypes_save', 'ProductsController@createtypes_save');
 	Route::get('/products/typesdelete/{id}/{sid}', 'ProductsController@typesdelete');
 	Route::post('/products/statustypes', 'ProductsController@statustypes');
 	//------------------------------------------------------------------------------------
-	
-	
+
+
 	//------------------------------------------------------------------------------------
 	Route::get('/members', 'MembersController@index');
 	Route::get('/members/index', 'MembersController@index');
@@ -133,7 +138,7 @@ Route::group(array('namespace' => 'Admin','prefix' => 'admin'), function() {
 	Route::post('/members/edit_save', 'MembersController@edit_save');
 	Route::get('/members/delete/{id}', 'MembersController@delete');
 	Route::post('/members/status', 'MembersController@status');
-	
+
 	//------------------------------------------------------------------------------------
 
 	Route::get('/projects', 'ProjectsController@index');
@@ -150,7 +155,7 @@ Route::group(array('namespace' => 'Admin','prefix' => 'admin'), function() {
 
 	Route::post('/projects/status', 'ProjectsController@status');
 
-	
+
 
 	Route::post('/projects/statusfeatured', 'ProjectsController@statusfeatured');
 
@@ -161,10 +166,10 @@ Route::group(array('namespace' => 'Admin','prefix' => 'admin'), function() {
 	Route::get('/quotes/delete/{id}', 'QuotesController@delete');
 
 	//------------------------------------------------------------------------------------
-	
-	
-	
-	
+
+
+
+
 });
 Route::get('blog/{slug}', array('uses' => 'BaseController@route'));
 Route::get('{slug}', array('uses' => 'BaseController@route'));

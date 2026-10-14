@@ -1,0 +1,131 @@
+/* SASA Packaging — Lamination rail (v1)
+   Endless slow rail of photo tiles. Palette: blush #F6E2E9 · ivory #FEFAF3 · sage #B8CFB3 · deep sage #84A282
+   Load AFTER sasa-premium.css. */
+
+.lam {
+  --lam-ease: cubic-bezier(.2, .8, .2, 1);
+  --lam-gap: 14px;
+  position: relative; overflow: hidden;
+  background: #FEFAF3;
+  padding: clamp(64px, 8vw, 110px) 0;
+}
+/* faint blush + sage circles behind the rail, same language as the hero */
+.lam::before, .lam::after { content: ""; position: absolute; z-index: 0; border-radius: 50%; pointer-events: none; }
+.lam::before { width: 420px; height: 420px; right: -120px; top: -140px; background: #F6E2E9; opacity: .75; }
+.lam::after  { width: 260px; height: 260px; left: -90px; bottom: -110px; background: #B8CFB3; opacity: .45; }
+.lam > * { position: relative; z-index: 1; }
+
+.lam__head { max-width: 640px; margin-bottom: clamp(30px, 4.5vw, 56px); }
+.lam__head .sx-title { margin-bottom: 14px; }
+
+/* ---------- rail ---------- */
+.lam__rail {
+  overflow-x: auto; scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.lam__rail::-webkit-scrollbar { display: none; }
+.lam__track { display: flex; width: max-content; }
+.lam__set { display: flex; gap: var(--lam-gap); padding-right: var(--lam-gap); }
+
+.lam__rail.is-live { overflow: hidden; }
+.lam__rail.is-live .lam__track { animation: lamDrift var(--lam-dur, 60s) linear infinite; will-change: transform; }
+.lam__rail.is-live:hover .lam__track,
+.lam__rail.is-live:focus-within .lam__track { animation-play-state: paused; }
+@keyframes lamDrift { to { transform: translateX(calc(var(--lam-w) * -1)); } }
+
+/* ---------- columns + tiles ---------- */
+.lam__col { display: flex; flex-direction: column; gap: var(--lam-gap); flex: none;
+  height: clamp(430px, 62vh, 600px); width: calc(clamp(210px, 21vw, 330px) * var(--cw, 1)); }
+.lam__tile {
+  position: relative; flex: 1 1 0; min-height: 0; overflow: hidden; isolation: isolate;
+  border-radius: 22px; background: #eef4ec;
+  box-shadow: 0 1px 2px rgba(31, 45, 34, .05), 0 10px 26px rgba(31, 45, 34, .08);
+  transition: transform .6s var(--lam-ease), box-shadow .6s var(--lam-ease);
+}
+.lam__col--a .lam__tile:first-child { flex-grow: 3; }
+.lam__col--a .lam__tile:last-child  { flex-grow: 2; }
+.lam__col--b .lam__tile:first-child { flex-grow: 2; }
+.lam__col--b .lam__tile:last-child  { flex-grow: 3; }
+.lam__col .lam__tile:only-child { flex-grow: 1; }
+.lam__tile:hover { transform: translateY(-6px); box-shadow: 0 22px 44px rgba(31, 45, 34, .18), 0 0 0 3px rgba(246, 226, 233, .9); }
+
+/* tiles without a photo get a palette gradient instead of an empty hole */
+.lam__tile--noimg.lam__tile--0 { background: linear-gradient(160deg, #B8CFB3, #84A282); }
+.lam__tile--noimg.lam__tile--1 { background: linear-gradient(160deg, #F6E2E9, #e9bfcf); }
+.lam__tile--noimg.lam__tile--2 { background: linear-gradient(160deg, #eef4ec, #B8CFB3); }
+
+.lam .lam__link, .lam .lam__link:hover, .lam .lam__link:focus { position: absolute; inset: 0; display: block; color: #fff; text-decoration: none; }
+.lam__link:focus-visible { outline: 3px solid #84A282; outline-offset: -5px; border-radius: 22px; }
+.lam__img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; display: block;
+  transform: scale(1.03); transition: transform 1.3s var(--lam-ease); }
+
+/* deep-green shade at the bottom keeps the white text readable */
+.lam__tile::after { content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(180deg, rgba(31, 45, 34, 0) 42%, rgba(31, 45, 34, .78) 100%); transition: opacity .5s; }
+.lam__tile--noimg::after { background: linear-gradient(180deg, rgba(31, 45, 34, 0) 50%, rgba(31, 45, 34, .55) 100%); }
+
+/* gloss sheen = the "lamination" moment */
+.lam__sheen { position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(105deg, transparent 36%, rgba(255, 255, 255, .5) 50%, transparent 64%); transform: translateX(-130%); }
+
+.lam__cap { position: absolute; left: 20px; right: 72px; bottom: 18px; z-index: 2; display: block; transition: transform .6s var(--lam-ease); }
+.lam__name { display: block; color: #fff; font: 600 clamp(1.05rem, 1.5vw, 1.3rem)/1.2 var(--sx-font-head, "Outfit", sans-serif); letter-spacing: -.01em; text-shadow: 0 1px 12px rgba(0, 0, 0, .25); }
+.lam__tag { display: block; max-height: 0; opacity: 0; overflow: hidden; margin-top: 0;
+  font-size: .9rem; line-height: 1.5; color: rgba(255, 255, 255, .9);
+  transition: max-height .6s var(--lam-ease), opacity .4s ease, margin .6s var(--lam-ease); }
+
+.lam__go { position: absolute; right: 16px; bottom: 16px; z-index: 2; display: grid; place-items: center;
+  width: 42px; height: 42px; border-radius: 50%; color: #1f2d22; background: #F6E2E9;
+  opacity: 0; transform: translateY(10px) scale(.8);
+  transition: opacity .4s ease, transform .5s var(--lam-ease), background-color .3s; }
+.lam__go svg { width: 16px; height: 16px; }
+
+.lam__link:hover .lam__img, .lam__link:focus-visible .lam__img { transform: scale(1.12); }
+.lam__link:hover .lam__sheen, .lam__link:focus-visible .lam__sheen { transform: translateX(130%); transition: transform 1.1s ease; }
+.lam__link:hover .lam__tag, .lam__link:focus-visible .lam__tag { max-height: 6em; opacity: 1; margin-top: 8px; }
+.lam__link:hover .lam__go, .lam__link:focus-visible .lam__go { opacity: 1; transform: none; }
+.lam__link:hover .lam__go:hover { background: #B8CFB3; }
+
+/* entrance: columns rise one after another when the rail scrolls into view */
+.sx-js .lam__rail:not(.is-in) .lam__col { opacity: 0; transform: translateY(46px); }
+.lam__rail .lam__col { transition: opacity .9s ease var(--d, 0ms), transform 1.1s var(--lam-ease) var(--d, 0ms); }
+
+/* ---------- mobile / touch ---------- */
+@media (max-width: 860px) {
+  .lam { --lam-gap: 10px; }
+  .lam__col { height: 380px; width: calc(62vw * var(--cw, 1)); }
+  .lam__tile { border-radius: 16px; }
+}
+@media (hover: none) { .lam__go { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .lam__rail.is-live { overflow-x: auto; }
+  .lam__rail.is-live .lam__track { animation: none; }
+  .lam__img, .lam__cap, .lam__tag, .lam__go, .lam__sheen, .lam__tile, .lam__rail .lam__col { transition: none !important; }
+  .sx-js .lam__rail:not(.is-in) .lam__col { opacity: 1; transform: none; }
+}
+
+/* APPEND to the END of public/assets/main/css/sasa-lamination.css */
+
+/* tile with no photo yet: centred icon on the palette gradient */
+.lam__ph { position: absolute; inset: 0; z-index: -2; display: grid; place-items: center; color: rgba(31, 45, 34, .28); }
+.lam__ph svg { width: 56px; height: 56px; }
+
+/* "View all products" pill button */
+.lam__more {
+  display: inline-flex; align-items: center; gap: 14px;
+  margin-top: clamp(28px, 4vw, 46px);
+  padding: 12px 12px 12px 28px;
+  border: 1px solid #1f2b22; border-radius: 999px;
+  color: #1f2b22; text-decoration: none;
+  font: 600 1rem/1 Outfit, Inter, system-ui, sans-serif;
+  transition: background-color .4s ease, color .4s ease;
+}
+.lam__more i {
+  display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%;
+  background: #1f2b22; color: #fff;
+  transition: background-color .4s ease, transform .5s cubic-bezier(.2, .8, .2, 1);
+}
+.lam__more svg { width: 16px; height: 16px; }
+.lam__more:hover, .lam__more:focus-visible { background: #1f2b22; color: #fff; outline: none; }
+.lam__more:hover i, .lam__more:focus-visible i { background: #84A282; transform: translateX(4px); }
