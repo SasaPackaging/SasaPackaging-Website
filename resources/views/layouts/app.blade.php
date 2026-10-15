@@ -48,7 +48,8 @@
 	<link href="{{ url('/public/assets/main/css/sasa-values.css') }}?v=1" rel="stylesheet">
 	<link href="{{ url('/public/assets/main/css/sasa-services.css') }}?v=2" rel="stylesheet">
 	<link href="{{ url('/public/assets/main/css/sasa-stats.css') }}?v=1" rel="stylesheet">
-
+  <link href="{{ url('/public/assets/main/css/sasa-trust.css') }}?v=1" rel="stylesheet">
+    <!-- <link href="{{ url('/public/assets/main/css/sasa-inner.css') }}?v=1" rel="stylesheet"> -->
 	<link href="{{ url('/public/assets/main/css/sasa-lamination.css') }}?v=1" rel="stylesheet">
 
 	@section('customstyle')
@@ -81,7 +82,6 @@
 	<script src="{{ url('/public/assets/main/js/sasa-values.js') }}?v=1"></script>
 	<script src="{{ url('/public/assets/main/js/sasa-services.js') }}?v=1"></script>
 	<script src="{{ url('/public/assets/main/js/sasa-stats.js') }}?v=1"></script>
-	  <link href="{{ url('/public/assets/main/css/sasa-trust.css') }}?v=1" rel="stylesheet">
 	<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 	@section('customscript')
