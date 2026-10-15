@@ -1,174 +1,115 @@
 @extends('layouts.master')
+
 @section('customstyle')
-
-
+<link href="{{ url('/') }}/public/assets/main/css/sasa-inner.css" rel="stylesheet">
+<link href="{{ url('/') }}/public/assets/main/css/sasa-inner-about.css" rel="stylesheet">
+{{-- shield + confetti look of the landing page (used on the certificates page) --}}
+<link href="{{ url('/') }}/public/assets/main/css/sasa-trust.css" rel="stylesheet">
 @stop
 
 @section('header')
-
 @include('partial.header')
-
 @stop
 
 @section('content')
- <section class="page-title" style="background-image: url(<?=$cms_dp['banner']?>); background-size: cover;
+@include('pages.inner._about_helpers')
+@php
+$cid  = (int) ($cms_dp['id'] ?? 0);
+$nav  = sxa_nav($cid);
+$row  = $nav['row'];
+$slug = $nav['slug'];
+$kind = sxa_kind($slug, $cms_dp['name'] ?? '');
+$is_cert = ($cid === 20) || ($kind === 'certificates');
+$is_404  = ($cid === 0);
 
-	background-repeat: no-repeat; background-position: center;">
+$imgs = [];
+if (!$is_404) {
+	$main = sxa_img($slug, $row['image'] ?? '');
+	if ($main === '') { $main = sxa_img($slug, $row['banner'] ?? ''); }
+	if ($main !== '') { $imgs[] = $main; }
+	foreach (sxa_extra($slug) as $u) { $imgs[] = $u; }
+}
+$title = trim($cms_dp['heading'] ?? '') !== '' ? $cms_dp['heading'] : ($cms_dp['name'] ?? '');
+$tag   = trim(strip_tags($cms_dp['tag_line'] ?? ''));
+$has_text = trim(strip_tags(html_entity_decode((string) ($cms_dp['full_contents'] ?? '')))) !== '';
+$lead  = ($tag !== '' && $tag !== $title) ? $tag : sxa_plain($cms_dp['full_contents'] ?? '', 190);
+$certs = $is_cert ? sxa_certs() : [];
 
-        <div class="auto-container">
+$crumbs = [['Home', url('/')]];
+if ($nav['parent'] !== '' && $nav['parent'] !== ($cms_dp['name'] ?? '')) { $crumbs[] = [$nav['parent'], null]; }
+$crumbs[] = [$cms_dp['name'] ?? 'Page', null];
+@endphp
 
-			<!-- Icons Box -->
+<main class="sxi sxa" id="main">
+	@include('pages.inner._about_hero', ['h_crumbs' => $crumbs, 'h_eyebrow' => $is_404 ? 'Error 404' : ($nav['parent'] ?: 'SASA Packaging'), 'h_title' => $is_404 ? 'Page not found' : $title, 'h_lead' => $is_404 ? 'Sorry, the page you are looking for was not found.' : $lead, 'h_imgs' => $imgs, 'h_kind' => $kind])
 
-			<div class="icons-box parallax-scene-1">
+	@if($is_404)
+		<section class="sxi-section"><div class="sxi-wrap" style="text-align:center">
+			<a class="sxi-btn sxi-btn--dark" href="{{ url('/') }}">Back to home</a>
+			<a class="sxi-btn sxi-btn--line" href="{{ url('/products-and-services.html') }}">Browse products</a>
+		</div></section>
+	@else
+		@include('pages.inner._about_nav', ['nav' => $nav, 'cur_id' => $cid])
 
-				<div class="icon-one" data-depth="0.10"></div>
-
-				<div class="icon-two" data-depth="0.30">
-
-					<img src="<?=url('/')?>/public/assets/main/images/icons/vector-9.png" alt="" />
-
+		@if($is_cert)
+			@if($has_text)
+			<section class="sxi-section"><div class="sxi-wrap sxa-narrow"><div class="sxi-prose" data-prose>{!! $cms_dp['full_contents'] !!}</div></div></section>
+			@endif
+			@include('pages.inner._certificates', ['certs' => $certs])
+		@else
+			<section class="sxi-section sxa-body">
+				<div class="sxi-wrap sxa-article">
+					<article class="sxa-card sxi-reveal">
+						<div class="sxa-card__kicker"><i>{!! sxa_icon($kind) !!}</i><span>{{ $cms_dp['name'] }}</span></div>
+						@if($has_text)
+							<div class="sxi-prose sxa-prose" data-prose>{!! $cms_dp['full_contents'] !!}</div>
+						@else
+							<div class="sxi-prose"><p>Details for this page will be added soon.</p></div>
+						@endif
+					</article>
+					<aside class="sxa-aside">
+						@if(count($nav['sibs']) > 1)
+						<div class="sxa-aside__box sxi-reveal">
+							<h3>{{ $nav['parent'] ?: 'Explore' }}</h3>
+							<ul>
+								@foreach($nav['sibs'] as $s)
+									<li><a href="{{ url('/' . $s['slug'] . '.html') }}" class="{{ (int) $s['id'] === $cid ? 'is-current' : '' }}">{!! sxa_icon(sxa_kind($s['slug'], $s['name'])) !!}<span>{{ $s['name'] }}</span></a></li>
+								@endforeach
+							</ul>
+						</div>
+						@endif
+						<div class="sxa-aside__cta sxi-reveal">
+							<h3>Talk to us</h3>
+							<p>Have a question or an order in mind?</p>
+							<a class="sxi-btn sxi-btn--solid" href="{{ url('/') }}/get-quote.html">Get a Quote</a>
+						</div>
+					</aside>
 				</div>
+			</section>
+		@endif
 
-				<div class="icon-three" data-depth="0.30">
+		@include('pages.inner._about_prevnext', ['nav' => $nav])
 
-					<img src="<?=url('/')?>/public/assets/main/images/icons/vector-34.png" alt="" />
-
+		<section class="sxi-section" style="padding-top:0">
+			<div class="sxi-wrap">
+				<div class="sxi-cta sxi-reveal">
+					<div><h2>Let's make something great together</h2><p>Tell us about your packaging and we will send you a quote.</p></div>
+					<div class="sxi-cta__btns">
+						<a class="sxi-btn sxi-btn--solid" href="{{ url('/') }}/get-quote.html">Get a Quote <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+						<a class="sxi-btn sxi-btn--ghost" href="{{ url('/') }}/contact-us.html">Contact us</a>
+					</div>
 				</div>
-
-				<div class="icon-four" data-depth="0.10"></div>
-
 			</div>
-
-			<h2><?=$cms_dp['banner_heading']?></h2>
-
-			<ul class="bread-crumb clearfix">
-
-				<li><a href="<?php echo URL::to('/'); ?>">Home</a></li>
-
-				<li><?=$cms_dp['name']?></li>
-
-			</ul>
-
-        </div>
-
-    </section> 
-
-    
-
-    
-
-    <section class="business-section">
-
-			<div class="small-circle-layer"></div>
-
-			<div class="vector-layer-one" style="background-image: url(<?=url('/')?>/public/assets/main/images/icons/vector-1.png)"></div>
-
-			<div class="vector-layer-two" style="background-image: url(<?=url('/')?>/public/assets/main/images/icons/vector-2.png)"></div>
-
-			<div class="vector-layer-three" style="background-image: url(<?=url('/')?>/public/assets/main/images/icons/vector-5.png)"></div>
-
-			<div class="auto-container">
-
-				<div class="row clearfix">
-					<?php 
-					if($cms_dp['id']==20){
-					?>
-                    <div class="content-column col-lg-12 col-md-12 col-sm-12 cont-colum-1">
-
-						<div class="inner-column">
-
-							<!-- Sec Title -->
-
-							<div class="sec-title">
-
-								<div class="title"><?=$cms_dp['tag_line']?></div>
-
-								<h2> <?=$cms_dp['heading']?></h2>
-
-								<div class="text">
-
-									 <?=$cms_dp['full_contents']?>						
-
-								</div>
-
-							</div>
-
-
-
-						</div>
-
-					</div>
-                    <?php }else{  ?>
-					<!-- Images Column -->
-
-					<div class="images-column col-lg-6 col-md-12 col-sm-12">
-
-						<div class="inner-column">
-
-							<div class="circle-layer"
-
-								style="background-image: url(<?=url('/')?>/public/assets/main/images/background/circles-layer.png)"></div>
-
-							<div class="images-outer parallax-scene-1">
-
-								<div class="image" data-depth="0.20">
-
-									<img src="<?=$cms_dp['image']?>" alt="" />
-
-								</div>
-
-							</div>
-
-						</div>
-
-					</div>
-
-					<!-- Content Column -->
-
-					<div class="content-column col-lg-6 col-md-12 col-sm-12 cont-colum-1">
-
-						<div class="inner-column">
-
-							<!-- Sec Title -->
-
-							<div class="sec-title">
-
-								<div class="title"><?=$cms_dp['tag_line']?></div>
-
-								<h2> <?=$cms_dp['heading']?></h2>
-
-								<div class="text">
-
-									 <?=$cms_dp['full_contents']?>						
-
-								</div>
-
-							</div>
-
-
-
-						</div>
-
-					</div>
-                    <?php } ?>
-
-				</div>
-
-			</div>
-
 		</section>
+	@endif
+</main>
+@stop
 
-  @section('footer')
-
+@section('footer')
 @include('partial.footer')
-@stop   
 @stop
+
 @section('customscript')
+<script src="{{ url('/') }}/public/assets/main/js/sasa-inner-about.js"></script>
+<script src="{{ url('/') }}/public/assets/main/js/sasa-inner.js"></script>
 @stop
-
-
-
-
-
-
-

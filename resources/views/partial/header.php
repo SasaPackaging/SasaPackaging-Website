@@ -1,6 +1,11 @@
 <?php
 /* ---- Data (unchanged from the original header: DB-driven navigation + settings) ---- */
 $pages = App\Model\Cms::whereRaw("status = 'Yes' AND is_header=1 AND p_id = 0 AND id!=1 ")->orderByRaw('sort_order')->get()->toArray();
+/* pages listed in config/site.php > hidden_pages are not shown in the menu (nothing is deleted) */
+$sx_hidden = (array) config('site.hidden_pages', []);
+$pages = array_values(array_filter($pages, function ($p) use ($sx_hidden) {
+	return !in_array($p['slug'], $sx_hidden, true);
+}));
 $about_home = App\Model\Cms::whereRaw(" id=1 ")->first()->toArray();
 $home_active = '';
 $slug = '';

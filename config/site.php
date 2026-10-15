@@ -9,4 +9,9 @@ return [
     'name'      => 'SASA Packaging',
     'whatsapp'  => '+923202956541', // the floating WhatsApp button
     'theme_color' => '#84a282',
+
+
+    'hidden_pages' => [
+        'our-portfolio',
+    ],
 ];

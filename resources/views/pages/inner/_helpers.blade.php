@@ -1,3 +1,4 @@
+<!-- pages\ineer\_helper.blade.php -->
 {{-- Shared helpers for the redesigned inner pages (Products & Services, Category, Product detail).
      Image order for every tile:
        1) public/assets/main/images/ProductImages/{slug}.webp|jpg|jpeg|png   (your curated images)

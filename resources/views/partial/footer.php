@@ -2,6 +2,11 @@
 /* ---- Data (unchanged from the original footer) ---- */
 $about_us = App\Model\Cms::whereRaw(" id=2 ")->first()->toArray();
 $db_pages_footer = App\Model\Cms::whereRaw("status = 'Yes' AND p_id=0 AND  is_footer='Yes'  AND id!=1 ")->orderByRaw('sort_order')->get()->toArray();
+/* pages listed in config/site.php > hidden_pages are not shown in Quick Links (nothing is deleted) */
+$sx_hidden = (array) config('site.hidden_pages', []);
+$db_pages_footer = array_values(array_filter($db_pages_footer, function ($p) use ($sx_hidden) {
+	return !in_array($p['slug'], $sx_hidden, true);
+}));
 $main_path = Config::get('app.url');
 $settings = App\Model\Setting::select('key_name', 'key_value')->get()->toArray();
 $array_settings = array();
