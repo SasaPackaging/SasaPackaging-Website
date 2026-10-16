@@ -1,303 +1,182 @@
+{{-- pages\careers.blade.php  (Careers: open positions + apply drawer)
+     Looks : public/assets/main/css/sasa-careers.css   Behaviour: public/assets/main/js/sasa-careers.js
+     Data  : tbl_job_openings (Admin later), questions per role in config/careers.php
+     Submit: POST /careers/apply  (CareerController@apply) --}}
 @extends('layouts.master')
+
 @section('customstyle')
-<style>
-.field_error { border:1px solid #C00 !important;}
-</style>
+<link href="{{ url('/') }}/public/assets/main/css/sasa-inner.css" rel="stylesheet">
+<link href="{{ url('/') }}/public/assets/main/css/sasa-inner-forms.css" rel="stylesheet">
+<link href="{{ url('/') }}/public/assets/main/css/sasa-careers.css" rel="stylesheet">
 @stop
+
 @section('header')
 @include('partial.header')
 @stop
+
 @section('content')
-<?php 
-$settings = App\Model\Setting::select('key_name','key_value')->get()->toArray();
-$array_settings = array();
-foreach ($settings as $k=>$setting){
-	$array_settings[$setting['key_name']] = $setting['key_value'];
+@php
+$title = trim(strip_tags((string) ($cms_dp['banner_heading'] ?? ''))) !== '' ? strip_tags($cms_dp['banner_heading']) : 'Careers';
+$crumb = $cms_dp['name'] ?? 'Careers';
+try {
+    $openings = \App\Model\JobOpening::where('status', 'Yes')->orderBy('sort_order')->get();
+} catch (\Exception $e) {
+    $openings = collect(); // table not migrated yet
 }
-?>
+$levels = config('careers.education_levels');
+$years  = range((int) date('Y') + 6, 1990);
+@endphp
 
-<section class="page-title" style="background-image: url(<?=$cms_dp['banner']?>); background-size: cover;
-	background-repeat: no-repeat; background-position: center;">
-        <div class="auto-container">
-			<!-- Icons Box -->
-			<div class="icons-box parallax-scene-1">
-				<div class="icon-one" data-depth="0.10"></div>
-				<div class="icon-two" data-depth="0.30">
-					<img src="<?=url('/')?>/public/assets/main/images/icons/vector-9.png" alt="" />
-				</div>
-				<div class="icon-three" data-depth="0.30">
-					<img src="<?=url('/')?>/public/assets/main/images/icons/vector-34.png" alt="" />
-				</div>
-				<div class="icon-four" data-depth="0.10"></div>
-			</div>
-			<h2><?=$cms_dp['banner_heading']?></h2>
-			<ul class="bread-crumb clearfix">
-				<li><a href="<?php echo URL::to('/'); ?>">Home</a></li>
-				<li><?=$cms_dp['name']?></li>
+<main class="sxi sxf sxc" id="main">
+
+	<section class="sxi-hero sxf-hero">
+		<span class="sxi-float sxi-float--a" data-depth="26"></span>
+		<span class="sxi-float sxi-float--b" data-depth="-18"></span>
+		<div class="sxi-wrap">
+			<ul class="sxi-crumbs">
+				<li><a href="{{ url('/') }}">Home</a></li>
+				<li>{{ $crumb }}</li>
 			</ul>
-        </div>
-    </section>
-    
-    
-    
-    
-    <section class="contact-section">
-		<div class="auto-container">
-			<div class="row clearfix">
-				<!-- Image Column -->
-				<div class="image-column col-lg-5 col-md-12 col-sm-12">
-					<div class="inner-column">
-						<div class="image">
-							<img src="<?=$cms_dp['image']?>" alt="" />
-						</div>
-						<div class="color-layer"></div>
-					</div>
-				</div>
-				<!-- Form Column -->
-				<div class="form-column col-lg-7 col-md-12 col-sm-12">
-						<div class="inner-column">
-							<div class="foorm-head">
-								<h2><?=$cms_dp['heading']?></h2>
-							</div>
-							<!-- Contact Form -->
-							<div class="contact-form">
-								<form  action="<?= URL::to('save_career') ?>" name="form_register" id="form_register" method="post">
-                                 <input type="hidden" name="_token" value="<?=csrf_token()?>">
-									<div class="row clearfix">
-
-										<div class="col-lg-6 col-md-6 col-sm-12 form-group">
-											<label for="">First Name</label>
-											<input type="text" name="contact_full_name" id="contact_full_name" placeholder="First Name"
-												 >
-										</div>
-
-										<div class="col-lg-6 col-md-6 col-sm-12 form-group">
-											<label for="">Last Name</label>
-											<input type="text" name="contact_last_name" id="contact_last_name" placeholder="Last Name"
-												>
-										</div>
-										<div class="col-lg-6 col-md-6 col-sm-12 form-group">
-											<label for="">Phone Number</label>
-											<input type="text" id="contact_phone" name="contact_phone" placeholder="Phone Number"
-												>
-										</div>
-										<div class="col-lg-6 col-md-6 col-sm-12 form-group">
-											<label for="">Email</label>
-											<input type="text" id="contact_email" name="contact_email" placeholder="Enter Your Email"
-												>
-										</div>
-
-										<div class="col-lg-6 col-md-6 col-sm-12 form-group">
-											<label for="">linkedIn URL</label>
-											<input type="text" id="contact_linked_url" name="contact_linked_url" placeholder="Enter linkedIn URL"
-												>
-										</div>
-										<div class="col-lg-6 col-md-6 col-sm-12 form-group">
-											<label for="">Position</label>
-											<input type="text" id="contact_position" name="contact_position" placeholder="Enter Position"
-												>
-										</div>
-
-										<div class="col-lg-12 col-md-12 col-sm-12 form-group">
-											<label for="">Upload CV</label>
-											<div>
-											<input type="file" name="cv" id="cv" accept=".pdf,.docx" placeholder="Upload Your CV">
-
-											</div>
-										</div>
-
-										<div class="col-lg-12 col-md-12 col-sm-12 form-group">
-											<div class="buttons-box">
-												<button class="theme-btn btn-style-one clearfix"  type="button" id="id_btn_submit">
-													<span class="btn-wrap">
-														<span class="text-one">Submit</span>
-														<span class="text-two">Submit</span>
-													</span>
-													<span class="icon flaticon-right-arrow"></span>
-												</button>
-                                                <img id="id_loading_process" style="display:none;" src="<?=url('/')?>/public/assets/images/loading_small.gif">
-											</div>
-										</div>
-
-									</div>
-								</form>
-							</div>
-							<!-- End Contact Form -->
-
-						</div>
-					</div>
-				</div>
-			</div>
-			
+			<span class="sxi-eyebrow">Join our team</span>
+			<h1 class="sxi-h1" data-split>{{ $title }}</h1>
+			<p class="sxf-lead">Help us build packaging that businesses trust. Pick a role, tell us about yourself, and attach your CV.</p>
 		</div>
 	</section>
 
+	<section class="sxi-section">
+		<div class="sxi-wrap">
+			<div class="sxc-top">
+				<h2>Open positions</h2>
+				<span>{{ count($openings) }} {{ count($openings) === 1 ? 'role' : 'roles' }} open</span>
+			</div>
 
+			<div class="sxc-list">
+				@forelse ($openings as $o)
+				<article class="sxc-job">
+					<div class="sxc-job__main">
+						<h3>{{ $o->title }}</h3>
+						@if ($o->summary)<p>{{ $o->summary }}</p>@endif
+					</div>
+					<ul class="sxc-tags">
+						@if ($o->department)<li>{{ $o->department }}</li>@endif
+						<li>{{ $o->location }}</li>
+						<li>{{ $o->job_type }}</li>
+					</ul>
+					<button type="button" class="sxi-btn sxi-btn--dark" data-apply data-id="{{ $o->id }}" data-title="{{ $o->title }}" data-profile="{{ $o->profile }}">Apply</button>
+				</article>
+				@empty
+				<p class="sxc-empty">There are no open positions right now. You can still send us your CV below.</p>
+				@endforelse
+			</div>
 
-  @section('footer')
-@include('partial.footer')
-@stop   
+			<div class="sxc-general">
+				<div>
+					<h3>Don't see your role?</h3>
+					<p>Send a general application and we will keep your CV on file.</p>
+				</div>
+				<button type="button" class="sxi-btn sxi-btn--line" data-apply data-id="" data-title="General application" data-profile="general">Send your CV</button>
+			</div>
+		</div>
+	</section>
+
+	<div class="sxc-ov" data-ov hidden></div>
+	<aside class="sxc-drawer" role="dialog" aria-modal="true" aria-labelledby="sxc-dt" data-drawer hidden>
+		<header class="sxc-dh">
+			<div><small>Applying for</small><h2 id="sxc-dt" data-title></h2></div>
+			<button type="button" class="sxc-x" data-close aria-label="Close application form">&times;</button>
+		</header>
+
+		<ol class="sxc-rail" data-rail>
+			<li>About you</li><li>Education</li><li>Experience</li><li>Role &amp; CV</li>
+		</ol>
+
+		<form id="sxc-form" method="post" action="{{ url('/careers/apply') }}" enctype="multipart/form-data" novalidate data-form>
+			<input type="hidden" name="_token" value="{{ csrf_token() }}">
+			<input type="hidden" name="job_opening_id" value="" data-oid>
+			<input type="text" name="website" class="sxc-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+			<section class="sxc-step" data-step>
+				<div class="sxf-grid">
+					<div class="sxf-field"><label for="c_fn">First name</label><input type="text" id="c_fn" name="first_name" autocomplete="given-name" data-req data-label="your first name"></div>
+					<div class="sxf-field"><label for="c_ln">Last name</label><input type="text" id="c_ln" name="last_name" autocomplete="family-name" data-req data-label="your last name"></div>
+					<div class="sxf-field sxf-field--full"><label for="c_em">Email</label><input type="text" id="c_em" name="email" inputmode="email" autocomplete="email" data-req data-type="email" data-label="a valid email"></div>
+					<div class="sxf-field"><label for="c_ph">Phone</label><input type="text" id="c_ph" name="phone" inputmode="tel" autocomplete="tel" data-req data-label="your phone number"></div>
+					<div class="sxf-field"><label for="c_ct">City</label><input type="text" id="c_ct" name="city" autocomplete="address-level2" data-req data-label="your city"></div>
+					<div class="sxf-field sxf-field--full"><label for="c_li">LinkedIn <em>(optional)</em></label><input type="text" id="c_li" name="linkedin_url" placeholder="https://"></div>
+				</div>
+			</section>
+
+			<section class="sxc-step" data-step hidden>
+				<div class="sxf-grid">
+					<div class="sxf-field sxf-field--full"><label for="c_lv">Highest qualification</label>
+						<select id="c_lv" name="education_level" data-req data-label="your qualification">
+							<option value="">Select</option>
+							@foreach ($levels as $k => $v)<option value="{{ $k }}">{{ $v }}</option>@endforeach
+						</select></div>
+					<div class="sxf-field sxf-field--full"><label for="c_dg">Degree / field of study</label><input type="text" id="c_dg" name="degree" placeholder="e.g. BS Graphic Design" data-req data-label="your degree"></div>
+					<div class="sxf-field"><label for="c_in">Institution</label><input type="text" id="c_in" name="institution" data-req data-label="your institution"></div>
+					<div class="sxf-field"><label for="c_yr" data-yrlabel>Year completed</label>
+						<select id="c_yr" name="grad_year" data-req data-label="the year">
+							<option value="">Select</option>
+							@foreach ($years as $y)<option value="{{ $y }}">{{ $y }}</option>@endforeach
+						</select></div>
+				</div>
+			</section>
+
+			<section class="sxc-step" data-step hidden>
+				<p class="sxc-q">Do you have prior work experience?</p>
+				<div class="sxc-choice">
+					<label><input type="radio" name="has_experience" value="yes" data-req-group data-label="whether you have experience"><span>Yes, I have worked before</span></label>
+					<label><input type="radio" name="has_experience" value="no"><span>No, I am a fresher</span></label>
+				</div>
+				<div class="sxc-reveal" data-exp><div class="sxc-reveal__in">
+					<div class="sxf-grid">
+						<div class="sxf-field"><label for="c_ey">Total experience</label>
+							<select id="c_ey" name="experience_years" data-req data-label="your experience" disabled>
+								<option value="">Select</option>
+								@foreach (config('careers.experience_years') as $e)<option value="{{ $e }}">{{ $e }}</option>@endforeach
+							</select></div>
+						<div class="sxf-field"><label for="c_lt">Last job title</label><input type="text" id="c_lt" name="last_title" data-req data-label="your last job title" disabled></div>
+						<div class="sxf-field sxf-field--full"><label for="c_le">Last employer</label><input type="text" id="c_le" name="last_employer" data-req data-label="your last employer" disabled></div>
+						<div class="sxf-field sxf-field--full"><label for="c_ps">Previous salary (PKR / month)</label>
+							<input type="text" id="c_ps" name="previous_salary" inputmode="numeric" data-req data-num data-label="your previous salary" disabled>
+							<label class="sxc-check"><input type="checkbox" name="is_unpaid" value="1" data-unpaid disabled> It was unpaid (internship / volunteer). Salary will be saved as N/A.</label></div>
+					</div>
+				</div></div>
+				<div class="sxf-field sxc-exp"><label for="c_xs">Expected salary (PKR / month) <em>(optional)</em></label><input type="text" id="c_xs" name="expected_salary" inputmode="numeric" data-num></div>
+			</section>
+
+			<section class="sxc-step" data-step hidden>
+				<div class="sxf-grid" data-extra></div>
+				<div class="sxf-grid">
+					<div class="sxf-field sxf-field--full"><label for="c_cv">Your CV <em>(PDF or Word, up to 5 MB)</em></label><input type="file" id="c_cv" name="cv" accept=".pdf,.doc,.docx" data-req data-label="your CV"></div>
+				</div>
+			</section>
+
+			<p class="sxc-err" role="alert" data-err></p>
+			<div class="sxc-foot">
+				<button type="button" class="sxi-btn sxi-btn--line" data-back>Back</button>
+				<button type="button" class="sxi-btn sxi-btn--dark" data-next>Next</button>
+				<button type="submit" class="sxi-btn sxi-btn--dark" data-submit hidden>Submit application</button>
+			</div>
+		</form>
+
+		<div class="sxc-done" data-done hidden>
+			<span class="sxc-done__tick" aria-hidden="true">&#10003;</span>
+			<h3>Application sent</h3>
+			<p data-donemsg></p>
+			<button type="button" class="sxi-btn sxi-btn--line" data-close>Close</button>
+		</div>
+	</aside>
+</main>
 @stop
+
+@section('footer')
+@include('partial.footer')
+@stop
+
 @section('customscript')
-<script src="{{ url('/') }}/public/assets/main/js/jquery.form.js"></script>
-
-<script>
-$(document).ready(function() {
-	var options = { 
-        beforeSubmit:  showRequest_client,
-		success:       showResponse_client,
-		dataType: 'json' 
-        }; 
- 		$('body').delegate('#id_btn_submit','click', function(){
-		if(valid_form()){
- 			jQuery('#form_register').ajaxForm(options).submit();  	
-		}
- 	}); 
-
-});
-//............................................................
-function showRequest_client(formData, jqForm, options) { 
-	$('#id_btn_submit').hide();
-	$('#id_loading_process').show();
-	
-}
-function showResponse_client(response, statusText, xhr, $form)  {
-	$('#id_btn_submit').show();
-	$('#id_loading_process').hide();
-	
-	if(response.status=='success'){
-		Toast.success(response.message);
-		$("#id_alert_success").html(response.message).show();
-		$('#form_register')[0].reset();
-	}else {
-		Toast.error(response.message);
-		$("#id_alert").html(response.message).show();
-		
-	}
-}
-
-
-
-function valid_form(){
-	
-	var flg = 0;
-	
-	
-	
-	
-	if ($.trim($("#contact_full_name").val()) == "") {
-        $("#contact_full_name").addClass('field_error');
-        if (flg == 0) {
-            $("#contact_full_name").focus();
-            Toast.error('Please enter your first name');
-           
-            flg = flg + 1;
-        }
-    }
-    else {
-        $("#contact_full_name").removeClass('field_error');
-
-    }
-	
-	if ($.trim($("#contact_last_name").val()) == "") {
-        $("#contact_last_name").addClass('field_error');
-        if (flg == 0) {
-            $("#contact_last_name").focus();
-            Toast.error('Please enter your last name');
-           
-            flg = flg + 1;
-        }
-    }
-    else {
-        $("#contact_last_name").removeClass('field_error');
-
-    }
-	
-	if ($.trim($("#contact_phone").val()) == "") {
-        $("#contact_phone").addClass('field_error');
-        if (flg == 0) {
-            $("#contact_phone").focus();
-            Toast.error('Please enter phone number');
-           
-            flg = flg + 1;
-        }
-    }
-    else {
-        $("#contact_phone").removeClass('field_error');
-
-    }
-	
-	filter = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; ///^.+@.+\..{2,15}$/;
-    if (!(filter.test($.trim($("#contact_email").val())))) {
-        $("#contact_email").addClass('field_error');
-        if (flg == 0) {
-            $("#contact_email").focus();
-            Toast.error('Please enter valid email');
-            flg = flg + 1;
-        }
-    }
-    else {
-        $("#contact_email").removeClass('field_error');
-
-    }
-	
-		
-		
-	if ($.trim($("#contact_linked_url").val()) == "") {
-        $("#contact_linked_url").addClass('field_error');
-        if (flg == 0) {
-            $("#contact_linked_url").focus();
-            Toast.error('Please enter  linkedIn URL ');
-           
-            flg = flg + 1;
-        }
-    }
-    else {
-        $("#contact_linked_url").removeClass('field_error');
-
-    }	
-	
-	if ($.trim($("#contact_position").val()) == "") {
-        $("#contact_position").addClass('field_error');
-        if (flg == 0) {
-            $("#contact_position").focus();
-            Toast.error('Please enter  position ');
-           
-            flg = flg + 1;
-        }
-    }
-    else {
-        $("#contact_position").removeClass('field_error');
-
-    }	
-	
-	
-	
-	
-	if ($.trim($("#cv").val()) == "") {
-        $("#cv").addClass('field_error');
-        if (flg == 0) {
-            $("#cv").focus();
-            Toast.error('Please upload your CV');
-            flg = flg + 1;
-        }
-    }
-    else {
-        $("#cv").removeClass('field_error');
-
-    }
-	
-	
-	
-
-
-    if (flg == 0) {
-        return true;
-    }else {
-		return false;
-	}
-	 
-	
-	}
-</script>
+<script>window.SXC = {profiles: @json(config('careers.profiles')), years: @json(config('careers.experience_years'))};</script>
+<script src="{{ url('/') }}/public/assets/main/js/sasa-careers.js"></script>
+<script src="{{ url('/') }}/public/assets/main/js/sasa-inner.js"></script>
 @stop

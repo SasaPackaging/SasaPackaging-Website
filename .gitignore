@@ -30,3 +30,12 @@ error_log
 
 # Local development files
 .phpunit.result.cache
+
+#.txtfiles
+/admin-views.txt
+/controllers.txt
+/migrations.txt
+/models.txt
+/routes.txt
+/uploads.txt
+/admincheck.txt
