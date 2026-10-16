@@ -1,7 +1,8 @@
 {{-- pages\contact.blade.php  (Contact us)
      Looks : public/assets/main/css/sasa-inner-forms.css   Behaviour: public/assets/main/js/sasa-forms.js
-     Data  : $cms_dp (Admin > Pages: banner heading, form heading, side image) + Admin settings
+     Data  : $cms_dp (Admin > Pages: banner heading, form heading) + Admin settings
              (CONTACT_EMAIL, ADDRESS, PHONE, POBOX).
+     Order : hero -> form (+ "Need a price?" panel) -> contact details cards.
      The form still posts to /common/contact_process with the same field names as before. --}}
 @extends('layouts.master')
 
@@ -27,7 +28,6 @@ $tel     = function ($v) { return preg_replace('/[^0-9+]/', '', (string) $v); };
 
 $title   = trim(strip_tags((string) ($cms_dp['banner_heading'] ?? ''))) !== '' ? strip_tags($cms_dp['banner_heading']) : ($cms_dp['name'] ?? 'Contact us');
 $heading = trim(strip_tags((string) ($cms_dp['heading'] ?? ''))) !== '' ? strip_tags($cms_dp['heading']) : 'Send us a message';
-$photo   = trim((string) ($cms_dp['image'] ?? ''));
 $crumb   = $cms_dp['name'] ?? 'Contact us';
 @endphp
 
@@ -50,34 +50,9 @@ $crumb   = $cms_dp['name'] ?? 'Contact us';
 	<section class="sxi-section">
 		<div class="sxi-wrap">
 
-			{{-- contact details --}}
-			<div class="sxf-cards">
-				@if($email !== '')
-				<div class="sxf-ic sxi-reveal">
-					<i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7.5 8.5 6 8.5-6"/></svg></i>
-					<div><small>Mail address</small><a href="mailto:{{ $email }}">{{ $email }}</a></div>
-				</div>
-				@endif
-				@if($address !== '')
-				<div class="sxf-ic sxi-reveal" style="--d:90ms">
-					<i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></i>
-					<div><small>Office location</small><span class="sxf-ic__t">{!! nl2br(e($address)) !!}</span></div>
-				</div>
-				@endif
-				@if($phone1 !== '' || $phone2 !== '')
-				<div class="sxf-ic sxi-reveal" style="--d:180ms">
-					<i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></i>
-					<div><small>Phone number</small>
-						@if($phone1 !== '')<a href="tel:{{ $tel($phone1) }}">{{ $phone1 }}</a>@endif
-						@if($phone2 !== '')<a href="tel:{{ $tel($phone2) }}">{{ $phone2 }}</a>@endif
-					</div>
-				</div>
-				@endif
-			</div>
-
+			{{-- 1) form + quote shortcut --}}
 			<div class="sxf-layout">
 
-				{{-- form --}}
 				<div class="sxf-card">
 					<div class="sxf-head">
 						<h2>{{ $heading }}</h2>
@@ -120,11 +95,7 @@ $crumb   = $cms_dp['name'] ?? 'Contact us';
 					</form>
 				</div>
 
-				{{-- side: image from Admin (if any) + shortcut to the quote page --}}
-				<aside class="sxf-side">
-					@if($photo !== '')
-					<div class="sxf-photo"><img src="{{ $photo }}" alt="" loading="lazy" onerror="this.remove()"></div>
-					@endif
+				<aside class="sxf-side sxf-side--sticky">
 					<div class="sxf-panel">
 						<h3>Need a price?</h3>
 						<p>Tell us about your packaging, sizes and quantities and we will prepare a quote for you.</p>
@@ -133,6 +104,32 @@ $crumb   = $cms_dp['name'] ?? 'Contact us';
 				</aside>
 
 			</div>
+
+			{{-- 2) contact details, below the form --}}
+			<div class="sxf-cards" style="margin:clamp(28px, 4vw, 52px) 0 0">
+				@if($email !== '')
+				<div class="sxf-ic sxi-reveal">
+					<i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7.5 8.5 6 8.5-6"/></svg></i>
+					<div><small>Mail address</small><a href="mailto:{{ $email }}">{{ $email }}</a></div>
+				</div>
+				@endif
+				@if($address !== '')
+				<div class="sxf-ic sxi-reveal" style="--d:90ms">
+					<i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></i>
+					<div><small>Office location</small><span class="sxf-ic__t">{!! nl2br(e($address)) !!}</span></div>
+				</div>
+				@endif
+				@if($phone1 !== '' || $phone2 !== '')
+				<div class="sxf-ic sxi-reveal" style="--d:180ms">
+					<i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></i>
+					<div><small>Phone number</small>
+						@if($phone1 !== '')<a href="tel:{{ $tel($phone1) }}">{{ $phone1 }}</a>@endif
+						@if($phone2 !== '')<a href="tel:{{ $tel($phone2) }}">{{ $phone2 }}</a>@endif
+					</div>
+				</div>
+				@endif
+			</div>
+
 		</div>
 	</section>
 </main>

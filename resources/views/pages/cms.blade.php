@@ -1,10 +1,9 @@
+{{-- pages\cms.blade.php  (Mission, Vision, Core Values, Strategy, Certificates and other CMS pages) --}}
 @extends('layouts.master')
 
 @section('customstyle')
 <link href="{{ url('/') }}/public/assets/main/css/sasa-inner.css" rel="stylesheet">
 <link href="{{ url('/') }}/public/assets/main/css/sasa-inner-about.css" rel="stylesheet">
-{{-- shield + confetti look of the landing page (used on the certificates page) --}}
-<link href="{{ url('/') }}/public/assets/main/css/sasa-trust.css" rel="stylesheet">
 @stop
 
 @section('header')
@@ -30,6 +29,7 @@ if (!$is_404) {
 	foreach (sxa_extra($slug) as $u) { $imgs[] = $u; }
 }
 $title = trim($cms_dp['heading'] ?? '') !== '' ? $cms_dp['heading'] : ($cms_dp['name'] ?? '');
+$title = sxa_title($title);   /* removes <br> and other tags that Admin headings may contain */
 $tag   = trim(strip_tags($cms_dp['tag_line'] ?? ''));
 $has_text = trim(strip_tags(html_entity_decode((string) ($cms_dp['full_contents'] ?? '')))) !== '';
 $lead  = ($tag !== '' && $tag !== $title) ? $tag : sxa_plain($cms_dp['full_contents'] ?? '', 190);
@@ -57,6 +57,7 @@ $crumbs[] = [$cms_dp['name'] ?? 'Page', null];
 			@endif
 			@include('pages.inner._certificates', ['certs' => $certs])
 		@else
+			{{-- the top pill menu is the only section menu, so the text card uses the full width --}}
 			<section class="sxi-section sxa-body">
 				<div class="sxi-wrap sxa-article">
 					<article class="sxa-card sxi-reveal">
@@ -67,23 +68,6 @@ $crumbs[] = [$cms_dp['name'] ?? 'Page', null];
 							<div class="sxi-prose"><p>Details for this page will be added soon.</p></div>
 						@endif
 					</article>
-					<aside class="sxa-aside">
-						@if(count($nav['sibs']) > 1)
-						<div class="sxa-aside__box sxi-reveal">
-							<h3>{{ $nav['parent'] ?: 'Explore' }}</h3>
-							<ul>
-								@foreach($nav['sibs'] as $s)
-									<li><a href="{{ url('/' . $s['slug'] . '.html') }}" class="{{ (int) $s['id'] === $cid ? 'is-current' : '' }}">{!! sxa_icon(sxa_kind($s['slug'], $s['name'])) !!}<span>{{ $s['name'] }}</span></a></li>
-								@endforeach
-							</ul>
-						</div>
-						@endif
-						<div class="sxa-aside__cta sxi-reveal">
-							<h3>Talk to us</h3>
-							<p>Have a question or an order in mind?</p>
-							<a class="sxi-btn sxi-btn--solid" href="{{ url('/') }}/get-quote.html">Get a Quote</a>
-						</div>
-					</aside>
 				</div>
 			</section>
 		@endif

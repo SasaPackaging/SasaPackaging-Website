@@ -74,6 +74,17 @@ if (!function_exists('sxa_clean')) {
 		return $h;
 	}
 }
+if (!function_exists('sxa_title')) {
+	/* Heading text from Admin -> plain one-line text: <br> becomes a space and other tags are removed,
+	   so it can be printed safely with {{ }} (no "<br>" showing on the page). */
+	function sxa_title($html)
+	{
+		$t = html_entity_decode((string) $html, ENT_QUOTES, 'UTF-8');
+		$t = preg_replace('/<br\s*\/?>/i', ' ', $t);
+		$t = strip_tags($t);
+		return trim(preg_replace('/\s+/', ' ', $t));
+	}
+}
 if (!function_exists('sxa_kind')) {
 	function sxa_kind($slug, $name = '')
 	{

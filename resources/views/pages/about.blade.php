@@ -27,6 +27,7 @@ $hero_imgs = array_slice($imgs, 0, 3);
 $gallery   = array_slice($imgs, 3);
 
 $title = trim($cms_dp['banner_heading'] ?? '') !== '' ? $cms_dp['banner_heading'] : $cms_dp['name'];
+$title = sxa_title($title);   /* removes <br> and other tags from the Admin heading */
 $tag   = trim(strip_tags($cms_dp['tag_line'] ?? ''));
 $lead  = sxa_plain($cms_dp['short_contents'] ?? '', 200);
 if ($lead === '') { $lead = ($tag !== '' && $tag !== $title) ? $tag : sxa_plain($cms_dp['full_contents'] ?? '', 190); }
