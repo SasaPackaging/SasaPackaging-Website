@@ -31,6 +31,13 @@ class RouteServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
 
         $this->routes(function () {
+            // Admin panel first, so the website's catch-all "{slug}" route never swallows /admin/...
+            Route::prefix(config('admin.prefix'))
+                ->middleware('web')
+                ->namespace($this->namespace . '\\Admin')
+                ->as('admin.')
+                ->group(base_path('routes/admin.php'));
+
             Route::middleware('web')
 				->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));

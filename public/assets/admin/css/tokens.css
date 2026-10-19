@@ -1,0 +1,44 @@
+/* SASA Admin — design tokens (colours, spacing, radius, fonts).
+   Same sage / forest palette as the website so both feel like one brand.
+   Change a value here and the whole admin follows. */
+:root {
+  --adm-forest: #2b3f2f;
+  --adm-forest-deep: #1f2d22;
+  --adm-sage: #84a282;
+  --adm-sage-soft: #eef4ec;
+  --adm-sage-ink: #4d6b4f;
+  --adm-blush: #f6e2e9;
+
+  --adm-bg: #f4f7f2;
+  --adm-surface: #ffffff;
+  --adm-line: #e4e9df;
+  --adm-line-strong: #d3decf;
+  --adm-ink: #1f2d22;
+  --adm-text: #425246;
+  --adm-muted: #6b7b6e;
+
+  --adm-info: #2f6fa3;
+  --adm-info-soft: #e6f0f8;
+  --adm-success: #2f7d4f;
+  --adm-success-soft: #e5f4ea;
+  --adm-warning: #a8741a;
+  --adm-warning-soft: #fbf1dc;
+  --adm-danger: #b3362f;
+  --adm-danger-soft: #fbe9e7;
+  --adm-neutral: #5b6b5e;
+  --adm-neutral-soft: #eef1ec;
+
+  --adm-radius: 14px;
+  --adm-radius-sm: 9px;
+  --adm-shadow-sm:
+    0 1px 2px rgba(31, 45, 34, 0.05), 0 4px 14px rgba(31, 45, 34, 0.05);
+  --adm-shadow-md: 0 14px 34px rgba(31, 45, 34, 0.14);
+
+  --adm-sidebar-w: 260px;
+  --adm-topbar-h: 64px;
+
+  --adm-font-head:
+    "Outfit", "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --adm-font-body:
+    "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+}

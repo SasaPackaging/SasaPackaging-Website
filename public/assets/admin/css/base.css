@@ -1,0 +1,32 @@
+/* SASA Admin — reset + typography. Everything is scoped under .adm so it can never leak into the website. */
+.adm *, .adm *::before, .adm *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+
+body.adm {
+  margin: 0;
+  background: var(--adm-bg);
+  color: var(--adm-text);
+  font-family: var(--adm-font-body);
+  font-size: 14.5px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.adm h1, .adm h2, .adm h3, .adm h4 {
+  margin: 0;
+  color: var(--adm-ink);
+  font-family: var(--adm-font-head);
+  font-weight: 600;
+  line-height: 1.25;
+}
+.adm p { margin: 0; }
+.adm a { color: var(--adm-sage-ink); text-decoration: none; }
+.adm a:hover { text-decoration: underline; }
+.adm img { max-width: 100%; display: block; }
+.adm svg { flex: none; }
+.adm :focus-visible { outline: 2px solid var(--adm-sage); outline-offset: 2px; }
+
+.adm .adm-muted { color: var(--adm-muted); }
+.adm .adm-small { font-size: 12.5px; }
+.adm .adm-nowrap { white-space: nowrap; }
+.adm .adm-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

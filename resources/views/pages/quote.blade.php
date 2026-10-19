@@ -67,10 +67,9 @@ $tel    = function ($v) { return preg_replace('/[^0-9+]/', '', (string) $v); };
 									<label for="q_unit">Unit</label>
 									<select id="q_unit" name="q_unit" data-req data-label="a unit">
 										<option value="">Please choose unit</option>
-										<option value="CM">CM</option>
-										<option value="INCHES">INCHES</option>
-										<option value="MM">MM</option>
-										<option value="FEET">FEET</option>
+										@foreach($quoteOptions['units'] as $value => $label)
+											<option value="{{ $value }}">{{ $label }}</option>
+										@endforeach
 									</select>
 								</div>
 							</div>
@@ -80,6 +79,28 @@ $tel    = function ($v) { return preg_replace('/[^0-9+]/', '', (string) $v); };
 						<div class="sxf-block">
 							<div class="sxf-block__head"><span class="sxf-num">2</span><h3>Product details</h3></div>
 							<div class="sxf-grid">
+								@if(!empty($quoteOptions['products']))
+								<div class="sxf-field">
+									<label for="q_product_id">Product (optional)</label>
+									<select id="q_product_id" name="q_product_id">
+										<option value="">Select a product</option>
+										@foreach($quoteOptions['products'] as $value => $label)
+										<option value="{{ $value }}">{{ $label }}</option>
+										@endforeach
+									</select>
+								</div>
+								@endif
+								@if(!empty($quoteOptions['services']))
+								<div class="sxf-field">
+									<label for="q_service_id">Service (optional)</label>
+									<select id="q_service_id" name="q_service_id">
+										<option value="">Select a service</option>
+										@foreach($quoteOptions['services'] as $value => $label)
+										<option value="{{ $value }}">{{ $label }}</option>
+										@endforeach
+									</select>
+								</div>
+								@endif
 								<div class="sxf-field sxf-field--full">
 									<label for="q_produt_name">Product name</label>
 									<input type="text" id="q_produt_name" name="q_produt_name" placeholder="e.g. Gift box, Tissue box" data-req data-label="the product name">
@@ -88,57 +109,41 @@ $tel    = function ($v) { return preg_replace('/[^0-9+]/', '', (string) $v); };
 									<label for="q_stock">Stock</label>
 									<select id="q_stock" name="q_stock" data-req data-label="a stock">
 										<option value="">Select stock</option>
-										<option value="208 GSM Bleach card">208 GSM Bleach card</option>
-										<option value="210 GSM Bleach card">210 GSM Bleach card</option>
-										<option value="220 GSM Bleach card">220 GSM Bleach card</option>
-										<option value="240 GSM Bleach card">240 GSM Bleach card</option>
-										<option value="300 GSM Bleach card">300 GSM Bleach card</option>
-										<option value="250 GSM Box Board">250 GSM Box Board</option>
-										<option value="300 GSM Box Board">300 GSM Box Board</option>
-										<option value="350 GSM Box Board">350 GSM Box Board</option>
-										<option value="148 GSM Matt Paper">148 GSM Matt Paper</option>
-										<option value="Kraft Paper 90 GSM">Kraft Paper 90 GSM</option>
-										<option value="Kraft Paper 112 GSM">Kraft Paper 112 GSM</option>
-										<option value="Kraft Paper 125 GSM">Kraft Paper 125 GSM</option>
-										<option value="Rigid">Rigid</option>
+										@foreach($quoteOptions['stocks'] as $value => $label)
+											<option value="{{ $value }}">{{ $label }}</option>
+										@endforeach
 									</select>
 								</div>
 								<div class="sxf-field">
 									<label for="q_coating">Coating</label>
 									<select id="q_coating" name="q_coating" data-req data-label="a coating">
-										<option value="Gloss Lamination">Shine Lamination</option>
-										<option value="Matte Lamination">Matt Lamination</option>
-										<option value="Gloss Varnish">Shine Varnish</option>
-										<option value="Matte Varnish">Matt Varnish</option>
+										@foreach($quoteOptions['coatings'] as $value => $label)
+											<option value="{{ $value }}">{{ $label }}</option>
+										@endforeach
 									</select>
 								</div>
 								<div class="sxf-field">
 									<label for="q_add_ons">Add ons</label>
 									<select id="q_add_ons" name="q_add_ons" data-req data-label="an add on">
-										<option value="Gold Foiling">Gold Foiling</option>
-										<option value="Silver Foiling">Silver Foiling</option>
-										<option value="Embossing">Embossing</option>
-										<option value="Spot UV">Spot UV</option>
-										<option value="window Patching">Window Patching</option>
+										@foreach($quoteOptions['add_ons'] as $value => $label)
+											<option value="{{ $value }}">{{ $label }}</option>
+										@endforeach
 									</select>
 								</div>
 								<div class="sxf-field">
 									<label for="q_colours">Colours</label>
 									<select id="q_colours" name="q_colours" data-req data-label="the colours">
-										<option value="1 Colour">1 Colour</option>
-										<option value="2 Colours">2 Colours</option>
-										<option value="3 Colours">3 Colours</option>
-										<option value="4 Colours">4 Colours</option>
-										<option value="5 Colours">5 Colours</option>
-										<option value="3 Colours / 1 Special Colour">3 Colours / 1 Special Colour</option>
-										<option value="4 Colours / 1 Special Colour">4 Colours / 1 Special Colour</option>
+										@foreach($quoteOptions['colours'] as $value => $label)
+											<option value="{{ $value }}">{{ $label }}</option>
+										@endforeach
 									</select>
 								</div>
 								<div class="sxf-field sxf-field--full">
 									<label for="q_packing">Packing</label>
 									<select id="q_packing" name="q_packing">
-										<option value="Bags">Bags</option>
-										<option value="Carton">Carton</option>
+										@foreach($quoteOptions['packings'] as $value => $label)
+											<option value="{{ $value }}">{{ $label }}</option>
+										@endforeach
 									</select>
 								</div>
 							</div>
@@ -166,9 +171,9 @@ $tel    = function ($v) { return preg_replace('/[^0-9+]/', '', (string) $v); };
 								<span class="sxf-drop__ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg></span>
 								<span class="sxf-drop__txt">
 									<strong data-sxf-name data-default="Choose a file or drop it here">Choose a file or drop it here</strong>
-									<small>jpg, png, gif, docx, xlsx, pdf, ai, cdr · maximum 15 MB</small>
+									<small>{{ $quoteOptions['file']['types'] }} · maximum {{ $quoteOptions['file']['max_mb'] }} MB</small>
 								</span>
-								<input type="file" id="q_file" name="q_file" accept=".jpg,.png,.gif,.docx,.xlsx,.pdf,.ai,.cdr" data-req data-label="your file" data-max-mb="15">
+								<input type="file" id="q_file" name="q_file" accept="{{ $quoteOptions['file']['accept'] }}" data-req data-label="your file" data-max-mb="{{ $quoteOptions['file']['max_mb'] }}">
 							</label>
 						</div>
 
