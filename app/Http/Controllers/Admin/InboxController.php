@@ -85,6 +85,11 @@ abstract class InboxController extends Controller
                 ->with('error', 'The reply could not be sent, so nothing was saved. Please check the mail settings and try again.');
         }
 
+        // With the "log" / "array" mail drivers nothing is really delivered, so do not claim it was.
+        if (in_array(config('mail.default'), ['log', 'array'], true)) {
+            return back()->with('error', 'Reply saved, but NOT delivered: MAIL_MAILER is "' . config('mail.default') . '". Set up SMTP in the .env file to send real emails.');
+        }
+
         return back()->with('success', 'Reply sent to ' . $item->email . ' and marked as replied.');
     }
 

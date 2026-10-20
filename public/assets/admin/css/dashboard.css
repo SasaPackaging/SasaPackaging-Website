@@ -1,52 +1,13 @@
 /* SASA Admin — dashboard page only. */
-.adm-grid {
-  display: grid;
-  gap: 18px;
-}
-.adm-grid--stats {
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  margin-bottom: 22px;
-}
-.adm-grid--two {
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  align-items: start;
-}
-.adm-grid--two .adm-card + .adm-card {
-  margin-top: 0;
-}
+.adm-grid { display: grid; gap: 18px; }
+.adm-grid--stats { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-bottom: 22px; }
+.adm-grid--two { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); align-items: start; }
+.adm-grid--two .adm-card + .adm-card { margin-top: 0; }
 
-.adm-latest {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.adm-latest li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 13px 20px;
-  border-bottom: 1px solid var(--adm-line);
-}
-.adm-latest li:last-child {
-  border-bottom: 0;
-}
-.adm-latest a {
-  display: block;
-  color: inherit;
-  flex: 1;
-  min-width: 0;
-}
-.adm-latest a:hover {
-  text-decoration: none;
-}
-.adm-latest strong {
-  display: block;
-  color: var(--adm-ink);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.adm-latest small {
-  color: var(--adm-muted);
-}
+.adm-latest { list-style: none; margin: 0; padding: 0; }
+.adm-latest li { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 13px 20px; border-bottom: 1px solid var(--adm-line); }
+.adm-latest li:last-child { border-bottom: 0; }
+.adm-latest a { display: block; color: inherit; flex: 1; min-width: 0; }
+.adm-latest a:hover { text-decoration: none; }
+.adm-latest strong { display: block; color: var(--adm-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.adm-latest small { color: var(--adm-muted); }

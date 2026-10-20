@@ -34,6 +34,9 @@ class SidebarComposer
                     if (!Route::has($item['route'])) {
                         continue; // feature not built yet -> no link
                     }
+                    if (!empty($item['permission']) && !Auth::guard('admin')->user()->hasPermission($item['permission'])) {
+                        continue; // this admin's role may not open it
+                    }
                     $item['count'] = isset($item['badge']) ? (int) ($badges[$item['badge']] ?? 0) : 0;
                     $items[] = $item;
                 }

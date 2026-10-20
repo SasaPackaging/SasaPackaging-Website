@@ -25,20 +25,51 @@ Route::middleware('admin.auth')->group(function () {
     Route::post('logout', 'AuthController@logout')->name('logout');
     Route::get('/', 'DashboardController@index')->name('dashboard');
 
-    // 1. Contact messages ----------------------------------------------------
-    Route::resource('contact-messages', 'ContactMessageController')
-        ->only(['index', 'show', 'destroy'])
-        ->parameters(['contact-messages' => 'id']);
-    Route::patch('contact-messages/{id}/status', 'ContactMessageController@updateStatus')->name('contact-messages.status');
-    Route::post('contact-messages/{id}/reply', 'ContactMessageController@reply')->name('contact-messages.reply');
+    // Inbox: only roles with the "inbox" permission (see config/admin.php > roles)
+    Route::middleware('admin.can:inbox')->group(function () {
 
-    // 2. Quote requests ------------------------------------------------------
-    Route::resource('quote-requests', 'QuoteRequestController')
-        ->only(['index', 'show', 'destroy'])
-        ->parameters(['quote-requests' => 'id']);
-    Route::patch('quote-requests/{id}/status', 'QuoteRequestController@updateStatus')->name('quote-requests.status');
-    Route::post('quote-requests/{id}/reply', 'QuoteRequestController@reply')->name('quote-requests.reply');
-    Route::get('quote-requests/{id}/file', 'QuoteRequestController@file')->name('quote-requests.file');
+        // 1. Contact messages ----------------------------------------------------
+        Route::resource('contact-messages', 'ContactMessageController')
+            ->only(['index', 'show'])
+            ->parameters(['contact-messages' => 'id']);
+        Route::patch('contact-messages/{id}/status', 'ContactMessageController@updateStatus')->name('contact-messages.status');
+        Route::post('contact-messages/{id}/reply', 'ContactMessageController@reply')->name('contact-messages.reply');
+
+        // 2. Quote requests ------------------------------------------------------
+        Route::resource('quote-requests', 'QuoteRequestController')
+            ->only(['index', 'show'])
+            ->parameters(['quote-requests' => 'id']);
+        Route::patch('quote-requests/{id}/status', 'QuoteRequestController@updateStatus')->name('quote-requests.status');
+        Route::post('quote-requests/{id}/reply', 'QuoteRequestController@reply')->name('quote-requests.reply');
+        Route::get('quote-requests/{id}/file', 'QuoteRequestController@file')->name('quote-requests.file');
+    });
+
+    // Deleting inbox records: super admins only (the "delete" permission, see config/admin.php > roles)
+    Route::middleware('admin.can:delete')->group(function () {
+        Route::delete('contact-messages/{id}', 'ContactMessageController@destroy')->name('contact-messages.destroy');
+        Route::delete('quote-requests/{id}', 'QuoteRequestController@destroy')->name('quote-requests.destroy');
+    });
+
+    // Admin users: super admins only
+    Route::middleware('admin.can:users')->group(function () {
+        Route::resource('admin-users', 'AdminUserController')
+            ->only(['index', 'store', 'edit', 'update', 'destroy'])
+            ->parameters(['admin-users' => 'id']);
+    });
+
+    // Website content: wording of the home page / footer, home slider, mission panels, inner pages
+    Route::middleware('admin.can:content')->group(function () {
+        Route::get('landing', 'ContentGroupController@index')->name('landing.index');
+        Route::get('landing/{group}', 'ContentGroupController@edit')->name('landing.edit');
+        Route::put('landing/{group}', 'ContentGroupController@update')->name('landing.update');
+        Route::delete('landing/{group}', 'ContentGroupController@reset')->name('landing.reset');
+
+        Route::get('records/{table}', 'RecordController@index')->name('records.index');
+        Route::get('records/{table}/create', 'RecordController@create')->name('records.create');
+        Route::post('records/{table}', 'RecordController@store')->name('records.store');
+        Route::get('records/{table}/{id}/edit', 'RecordController@edit')->name('records.edit');
+        Route::put('records/{table}/{id}', 'RecordController@update')->name('records.update');
+    });
 
     // 3+. (Services, Projects, Products ... are added here step by step)
 });

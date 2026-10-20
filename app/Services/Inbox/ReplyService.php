@@ -18,7 +18,7 @@ class ReplyService
      */
     public function send($inquiry, Admin $admin, $subject, $body)
     {
-        Mail::to($inquiry->email)->send(new InquiryReplyMail($inquiry, $subject, $body));
+        Mail::to($inquiry->email)->send(new InquiryReplyMail($inquiry, $subject, $body, $admin->name));
 
         $reply = $inquiry->replies()->create([
             'admin_id' => $admin->id,

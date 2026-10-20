@@ -31,7 +31,9 @@
   </dl>
 </x-admin.card>
 
+@if(auth('admin')->user()->hasPermission('delete'))
 <x-admin.card title="Delete" class="adm-card--danger">
   <p class="adm-muted adm-small" style="margin-bottom:12px">This removes the record and its replies for good.</p>
   <x-admin.delete-form :action="route($inbox['route'] . '.destroy', $item->id)" message="Delete this record permanently?" label="Delete record" :block="true" />
 </x-admin.card>
+@endif

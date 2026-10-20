@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\ContactMessage;
 use App\Models\QuoteRequest;
+use App\Services\Content\ContentOverrides;
 use App\View\Composers\Admin\SidebarComposer;
 use App\View\Composers\QuoteFormComposer;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -32,6 +33,9 @@ class AppServiceProvider extends ServiceProvider
     {
         // Admin migrations live in their own folder: database/migrations/admin
         $this->loadMigrationsFrom(database_path('migrations/admin'));
+
+        // Wording edited in Admin > Landing content overrides config/landing.php and config/site.php
+        ContentOverrides::apply();
 
         // Short stable names stored in inquiry_replies.inquiry_type (instead of full class names)
         Relation::morphMap([

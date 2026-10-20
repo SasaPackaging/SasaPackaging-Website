@@ -79,19 +79,19 @@ if (substr($sx_logo, -4) === '.svg' && file_exists($sx_logo_path)) {
 
 		<!-- Quick links -->
 		<div>
-			<h3>Quick Links</h3>
+			<h3><?= e(config('site.footer.quick_links_title')) ?></h3>
 			<ul class="page-list">
-				<li><a href="<?php echo URL::to('/'); ?>">Home</a></li>
+				<li><a href="<?php echo URL::to('/'); ?>"><?= e(config('site.footer.home_label')) ?></a></li>
 				<?php foreach ($db_pages_footer as $row) { ?>
 					<li><a href="<?= $main_path ?>/<?= $row['slug'] ?>.html"><?= e($row['name']) ?></a></li>
 				<?php } ?>
-				<li><a href="<?= url('/machines.html') ?>">Machines</a></li>
+				<li><a href="<?= url('/machines.html') ?>"><?= e(config('site.footer.machines_label')) ?></a></li>
 			</ul>
 		</div>
 
 		<!-- Contact -->
 		<div>
-			<h3>Contact Us</h3>
+			<h3><?= e(config('site.footer.contact_title')) ?></h3>
 			<ul class="sx-contact">
 				<?php if ($sx_address != '') { ?>
 					<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -121,9 +121,9 @@ if (substr($sx_logo, -4) === '.svg' && file_exists($sx_logo_path)) {
 
 		<!-- Map -->
 		<div class="sx-footer__map">
-			<h3>Find Us</h3>
-			<iframe title="SASA Packaging location map"
-				src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13594.09579477264!2d74.23901098715818!3d31.592100000000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39191d64441b8c19%3A0xf102c3c0378e80d1!2sSASA%20PACKAGING!5e0!3m2!1sen!2s!4v1683013663221!5m2!1sen!2s"
+			<h3><?= e(config('site.footer.map_title')) ?></h3>
+			<iframe title="<?= e($sx_site_name) ?>"
+				src="<?= e(config('site.footer.map_embed_url')) ?>"
 				width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
 				referrerpolicy="no-referrer-when-downgrade"></iframe>
 		</div>
@@ -132,13 +132,13 @@ if (substr($sx_logo, -4) === '.svg' && file_exists($sx_logo_path)) {
 
 	<div class="sx-footer__bar">
 		<div class="sx-container" style="justify-content:center;text-align:center">
-			<div>Copyright &copy; <span><?= date('Y') ?></span> <?= e($sx_site_name) ?>. All Rights Reserved.</div>
+			<div>Copyright &copy; <span><?= date('Y') ?></span> <?= e($sx_site_name) ?>. <?= e(config('site.footer.copyright_text')) ?></div>
 		</div>
 	</div>
 </footer>
 <!-- End Main Footer -->
 
-<button type="button" class="sx-totop" id="sxToTop" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<button type="button" class="sx-totop" id="sxToTop" aria-label="<?= e(config('site.footer.back_to_top_label')) ?>"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 		<path d="m6 14 6-6 6 6" />
 	</svg></button>
 

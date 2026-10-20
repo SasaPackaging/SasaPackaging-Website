@@ -29,6 +29,20 @@ return [
     'per_page' => 15,
 
     /*
+    | Who can do what.
+    | Every admin has ONE role. "permissions" are the sections of the panel the role may open
+    | ('*' = everything). Menu items and routes ask for these permission names.
+    |   super -> IT support / website owner: everything, including adding other admins
+    |   staff -> the person who answers customers: only the Inbox (contact messages + quotes)
+    */
+    'super_role' => 'super',
+    'default_role' => 'staff',
+    'roles' => [
+        'super' => ['label' => 'Super admin (IT support)', 'permissions' => ['*']],
+        'staff' => ['label' => 'Inbox staff (replies to customers)', 'permissions' => ['inbox']],
+    ],
+
+    /*
     | Inbox (Contact messages + Quote requests share this workflow).
     | "workflow" says which status a record gets when it arrives, when an admin
     | opens it and when a reply is sent. "statuses" is the list shown in filters.
@@ -71,22 +85,32 @@ return [
         [
             'heading' => 'Inbox',
             'items' => [
-                ['label' => 'Contact messages', 'route' => 'admin.contact-messages.index', 'icon' => 'mail',  'active' => 'admin.contact-messages.*', 'badge' => 'contact_new'],
-                ['label' => 'Quote requests',   'route' => 'admin.quote-requests.index',   'icon' => 'quote', 'active' => 'admin.quote-requests.*',   'badge' => 'quote_new'],
+                ['label' => 'Contact messages', 'route' => 'admin.contact-messages.index', 'icon' => 'mail',  'active' => 'admin.contact-messages.*', 'badge' => 'contact_new', 'permission' => 'inbox'],
+                ['label' => 'Quote requests',   'route' => 'admin.quote-requests.index',   'icon' => 'quote', 'active' => 'admin.quote-requests.*',   'badge' => 'quote_new', 'permission' => 'inbox'],
             ],
         ],
         [
             'heading' => 'Website content',
             'items' => [
-                ['label' => 'Landing content', 'route' => 'admin.landing.index',      'icon' => 'layout',   'active' => 'admin.landing.*'],
-                ['label' => 'Services',        'route' => 'admin.services.index',     'icon' => 'layers',   'active' => 'admin.services.*'],
-                ['label' => 'Projects',        'route' => 'admin.projects.index',     'icon' => 'image',    'active' => 'admin.projects.*'],
-                ['label' => 'Products',        'route' => 'admin.products.index',     'icon' => 'box',      'active' => 'admin.products.*'],
-                ['label' => 'Team members',    'route' => 'admin.team-members.index', 'icon' => 'users',    'active' => 'admin.team-members.*'],
-                ['label' => 'Certificates',    'route' => 'admin.certificates.index', 'icon' => 'award',    'active' => 'admin.certificates.*'],
-                ['label' => 'News & events',   'route' => 'admin.news.index',         'icon' => 'calendar', 'active' => 'admin.news.*'],
-                ['label' => 'Partners',        'route' => 'admin.partners.index',     'icon' => 'handshake', 'active' => 'admin.partners.*'],
-                ['label' => 'Careers',         'route' => 'admin.careers.index',      'icon' => 'briefcase', 'active' => 'admin.careers.*'],
+                ['label' => 'Landing content', 'route' => 'admin.landing.index',      'icon' => 'layout',   'active' => 'admin.landing.index', 'permission' => 'content'],
+                ['label' => 'Home slider',     'route' => 'admin.records.index', 'params' => ['table' => 'banners'], 'icon' => 'image', 'permission' => 'content'],
+                ['label' => 'Mission & values', 'route' => 'admin.records.index', 'params' => ['table' => 'panels'], 'icon' => 'award', 'permission' => 'content'],
+                ['label' => 'Inner pages',     'route' => 'admin.records.index', 'params' => ['table' => 'pages'],   'icon' => 'quote', 'permission' => 'content'],
+                ['label' => 'Footer & contact', 'route' => 'admin.landing.edit',  'params' => ['group' => 'contact'], 'icon' => 'mail', 'permission' => 'content'],
+                ['label' => 'Services',        'route' => 'admin.services.index',     'icon' => 'layers',   'active' => 'admin.services.*', 'permission' => 'content'],
+                ['label' => 'Projects',        'route' => 'admin.projects.index',     'icon' => 'image',    'active' => 'admin.projects.*', 'permission' => 'content'],
+                ['label' => 'Products',        'route' => 'admin.products.index',     'icon' => 'box',      'active' => 'admin.products.*', 'permission' => 'content'],
+                ['label' => 'Team members',    'route' => 'admin.team-members.index', 'icon' => 'users',    'active' => 'admin.team-members.*', 'permission' => 'content'],
+                ['label' => 'Certificates',    'route' => 'admin.certificates.index', 'icon' => 'award',    'active' => 'admin.certificates.*', 'permission' => 'content'],
+                ['label' => 'News & events',   'route' => 'admin.news.index',         'icon' => 'calendar', 'active' => 'admin.news.*', 'permission' => 'content'],
+                ['label' => 'Partners',        'route' => 'admin.partners.index',     'icon' => 'handshake', 'active' => 'admin.partners.*', 'permission' => 'content'],
+                ['label' => 'Careers',         'route' => 'admin.careers.index',      'icon' => 'briefcase', 'active' => 'admin.careers.*', 'permission' => 'content'],
+            ],
+        ],
+        [
+            'heading' => 'Settings',
+            'items' => [
+                ['label' => 'Admin users', 'route' => 'admin.admin-users.index', 'icon' => 'users', 'active' => 'admin.admin-users.*', 'permission' => 'users'],
             ],
         ],
     ],

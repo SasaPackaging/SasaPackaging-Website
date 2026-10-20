@@ -14,9 +14,11 @@ class InquiryReplyMail extends Mailable
     public $inquiry;
     public $replyBody;
     public $replySubject;
+    public $signedBy;
 
-    public function __construct($inquiry, $subject, $body)
+    public function __construct($inquiry, $subject, $body, $signedBy = null)
     {
+        $this->signedBy     = $signedBy;
         $this->inquiry      = $inquiry;
         $this->replySubject = $subject;
         $this->replyBody    = $body;

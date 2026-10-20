@@ -20,8 +20,9 @@ body.adm {
   line-height: 1.25;
 }
 .adm p { margin: 0; }
-.adm a { color: var(--adm-sage-ink); text-decoration: none; }
-.adm a:hover { text-decoration: underline; }
+.adm a:not([class]) { color: var(--adm-primary-ink); text-decoration: none; }
+.adm a { text-decoration: none; }
+.adm a:not([class]):hover { text-decoration: underline; }
 .adm img { max-width: 100%; display: block; }
 .adm svg { flex: none; }
 .adm :focus-visible { outline: 2px solid var(--adm-sage); outline-offset: 2px; }

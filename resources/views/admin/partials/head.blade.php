@@ -10,4 +10,5 @@
 <link rel="stylesheet" href="@adminAsset('css/base.css')">
 <link rel="stylesheet" href="@adminAsset('css/layout.css')">
 <link rel="stylesheet" href="@adminAsset('css/components.css')">
+<link rel="stylesheet" href="@adminAsset('css/content.css')">
 <link rel="icon" type="image/svg+xml" href="{{ url('/') }}/public/assets/main/images/logo-small.svg">

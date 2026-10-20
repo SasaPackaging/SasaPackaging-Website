@@ -91,8 +91,11 @@ return [
             'active' => ['column' => 'status', 'value' => 'Yes'],
             'order'  => 'sort_order',
         ],
+        // Real services = the child pages of "Products & Services" in tbl_cms (p_id 24).
+        // (tbl_services is the Mission / Vision / Values panels, NOT services.)
         'services' => [
-            'table'  => 'tbl_services',
+            'table'  => 'tbl_cms',
+            'where'  => ['p_id' => 24],
             'id'     => 'id',
             'label'  => 'name',
             'active' => ['column' => 'status', 'value' => 'Yes'],

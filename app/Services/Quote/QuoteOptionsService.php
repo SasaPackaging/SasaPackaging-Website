@@ -73,6 +73,12 @@ class QuoteOptionsService
 
         $query = DB::table($c['table']);
 
+        foreach ((array) ($c['where'] ?? []) as $column => $value) {
+            if (Schema::hasColumn($c['table'], $column)) {
+                $query->where($column, $value);
+            }
+        }
+
         if (!empty($c['active']) && Schema::hasColumn($c['table'], $c['active']['column'])) {
             $query->where($c['active']['column'], $c['active']['value']);
         }

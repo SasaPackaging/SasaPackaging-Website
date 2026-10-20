@@ -1,44 +1,60 @@
 /* SASA Admin — design tokens (colours, spacing, radius, fonts).
-   Same sage / forest palette as the website so both feel like one brand.
+   Palette (same four colours as the website):
+     blush  #F6E2E9   ivory #FEFAF3   sage #B8CFB3   deep sage #84A282
    Change a value here and the whole admin follows. */
 :root {
-  --adm-forest: #2b3f2f;
-  --adm-forest-deep: #1f2d22;
-  --adm-sage: #84a282;
-  --adm-sage-soft: #eef4ec;
-  --adm-sage-ink: #4d6b4f;
-  --adm-blush: #f6e2e9;
+  /* the four brand colours */
+  --adm-blush: #F6E2E9;
+  --adm-ivory: #FEFAF3;
+  --adm-sage: #B8CFB3;
+  --adm-sage-deep: #84A282;
 
-  --adm-bg: #f4f7f2;
-  --adm-surface: #ffffff;
-  --adm-line: #e4e9df;
-  --adm-line-strong: #d3decf;
+  /* text (dark green-grey so it stays readable on every brand colour) */
   --adm-ink: #1f2d22;
-  --adm-text: #425246;
-  --adm-muted: #6b7b6e;
+  --adm-text: #3d4d41;
+  --adm-muted: #667569;
 
-  --adm-info: #2f6fa3;
-  --adm-info-soft: #e6f0f8;
-  --adm-success: #2f7d4f;
-  --adm-success-soft: #e5f4ea;
-  --adm-warning: #a8741a;
-  --adm-warning-soft: #fbf1dc;
-  --adm-danger: #b3362f;
-  --adm-danger-soft: #fbe9e7;
-  --adm-neutral: #5b6b5e;
-  --adm-neutral-soft: #eef1ec;
+  /* surfaces */
+  --adm-bg: var(--adm-ivory);
+  --adm-surface: #ffffff;
+  --adm-surface-alt: #faf5ec;
+  --adm-line: #ece5d8;
+  --adm-line-strong: #ddd3c2;
+
+  /* primary action colour (buttons, active tab, active menu item) */
+  --adm-primary: var(--adm-sage-deep);
+  --adm-primary-hover: #7a9978;
+  --adm-on-primary: var(--adm-ink);
+  --adm-primary-soft: #eaf1e7;
+  --adm-primary-ink: #4d6b4f;
+
+  /* sidebar */
+  --adm-sidebar-bg: var(--adm-blush);
+  --adm-sidebar-line: #ecd0da;
+  --adm-sidebar-text: var(--adm-ink);
+  --adm-sidebar-muted: #7d5b69;
+  --adm-sidebar-hover: rgba(255, 255, 255, 0.65);
+
+  /* status colours (soft background + readable text) */
+  --adm-info: #94415f;          /* "New" uses the blush family */
+  --adm-info-soft: var(--adm-blush);
+  --adm-success: #3b6a42;
+  --adm-success-soft: #e4eee0;
+  --adm-warning: #8a5f12;
+  --adm-warning-soft: #fbf0d6;
+  --adm-danger: #a63a33;
+  --adm-danger-soft: #fbe5e3;
+  --adm-neutral: #5f6b61;
+  --adm-neutral-soft: #eeeae0;
 
   --adm-radius: 14px;
   --adm-radius-sm: 9px;
-  --adm-shadow-sm:
-    0 1px 2px rgba(31, 45, 34, 0.05), 0 4px 14px rgba(31, 45, 34, 0.05);
-  --adm-shadow-md: 0 14px 34px rgba(31, 45, 34, 0.14);
+  --adm-shadow-sm: 0 1px 2px rgba(31, 45, 34, 0.04), 0 4px 14px rgba(31, 45, 34, 0.05);
+  --adm-shadow-md: 0 14px 34px rgba(31, 45, 34, 0.13);
 
   --adm-sidebar-w: 260px;
   --adm-topbar-h: 64px;
 
-  --adm-font-head:
-    "Outfit", "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
-  --adm-font-body:
-    "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --adm-font-head: "Outfit", "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --adm-font-body: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
 }
