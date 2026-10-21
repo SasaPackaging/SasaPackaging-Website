@@ -20,6 +20,12 @@ $text = function ($key, $label, $extra = []) {
     return array_merge(['key' => $key, 'label' => $label, 'type' => 'text'], $extra);
 };
 
+// "Application questions" choices = the profiles written in config/careers.php
+$profiles = [];
+foreach (array_keys((require __DIR__ . '/careers.php')['profiles']) as $key) {
+    $profiles[$key] = ucfirst($key);
+}
+
 return [
 
     'groups' => [
@@ -108,7 +114,7 @@ return [
         ],
 
         'machines' => [
-            'label' => 'Machines', 'icon' => 'box',
+            'label' => 'Automation', 'icon' => 'box',
             'fields' => [
                 $text('landing.machines.eyebrow', 'Small heading'),
                 $text('landing.machines.title', 'Heading', ['raw' => true]),
@@ -146,7 +152,8 @@ return [
                 $text('landing.news.eyebrow', 'Small heading'),
                 $text('landing.news.title', 'Heading', ['raw' => true]),
                 $text('landing.news.lead', 'Intro text', ['raw' => true]),
-                ['key' => 'landing.news.limit', 'label' => 'How many items to show', 'type' => 'number'],
+                ['key' => 'landing.news.limit', 'label' => 'How many items to show on the home page', 'type' => 'number'],
+                $text('landing.news.read_more', '"Read more" text on cards'),
                 $text('landing.news.ticker_label', 'Top ticker label'),
                 ['key' => 'landing.news.ticker_empty', 'label' => 'Top ticker when empty', 'type' => 'textarea'],
                 $text('landing.news.empty_title', 'Empty state: heading'),
@@ -185,7 +192,7 @@ return [
             'fields' => [
                 $text('site.footer.quick_links_title', 'Quick links heading'),
                 $text('site.footer.home_label', 'Home link text'),
-                $text('site.footer.machines_label', 'Machines link text'),
+                $text('site.footer.machines_label', 'Machines link text (menu and footer)'),
                 $text('site.footer.contact_title', 'Contact heading'),
                 $text('site.footer.map_title', 'Map heading'),
                 ['key' => 'site.footer.map_embed_url', 'label' => 'Google Maps embed link', 'type' => 'textarea', 'hint' => 'Google Maps > Share > Embed a map > copy only the link inside src="..."'],
@@ -231,6 +238,23 @@ return [
                 ['name' => 'button_text', 'label' => 'Button text', 'type' => 'text'],
                 ['name' => 'link', 'label' => 'Button link', 'type' => 'text', 'hint' => 'Example: /about-us.html'],
                 ['name' => 'status', 'label' => 'Show on website', 'type' => 'status'],
+                ['name' => 'sort_order', 'label' => 'Order (1 comes first)', 'type' => 'number'],
+            ],
+        ],
+
+        'openings' => [
+            'table' => 'tbl_job_openings', 'label' => 'Careers: open positions', 'singular' => 'position', 'icon' => 'briefcase',
+            'about' => 'Jobs shown on the Careers page. A Hiring news item appears on the home page only while at least one position is shown here.',
+            'title' => 'title', 'order' => 'sort_order', 'creatable' => true, 'deletable' => true,
+            'list' => ['title' => 'Position', 'department' => 'Department', 'status' => 'Status'],
+            'fields' => [
+                ['name' => 'title', 'label' => 'Position title', 'type' => 'text', 'required' => true],
+                ['name' => 'department', 'label' => 'Department', 'type' => 'text', 'hint' => 'Example: Design, Production, Sales'],
+                ['name' => 'location', 'label' => 'Location', 'type' => 'text', 'default' => 'Lahore'],
+                ['name' => 'job_type', 'label' => 'Job type', 'type' => 'text', 'default' => 'Full-time', 'hint' => 'Example: Full-time, Part-time, Internship'],
+                ['name' => 'profile', 'label' => 'Application questions', 'type' => 'select', 'options' => $profiles, 'hint' => 'Which extra questions the applicant sees (set in config/careers.php).'],
+                ['name' => 'summary', 'label' => 'Short description', 'type' => 'textarea'],
+                ['name' => 'status', 'label' => 'Show on the Careers page', 'type' => 'status'],
                 ['name' => 'sort_order', 'label' => 'Order (1 comes first)', 'type' => 'number'],
             ],
         ],

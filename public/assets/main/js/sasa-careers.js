@@ -210,7 +210,7 @@
     $$("input,select", exp).forEach(function (f) {
       f.disabled = true;
     });
-    $("[data-title]").textContent = btn.getAttribute("data-title");
+    $("[data-title]", drawer).textContent = btn.getAttribute("data-title");
     form.elements.job_opening_id.value = btn.getAttribute("data-id") || "";
     renderExtra(btn.getAttribute("data-profile") || "general");
     $("[data-rail]").hidden = false;
@@ -238,6 +238,13 @@
       open(b);
     });
   });
+  /* link from a hiring announcement: /careers.html?apply=ID opens that position's form */
+  (function () {
+    var m = /[?&]apply=(\d+)/.exec(window.location.search);
+    if (!m) return;
+    var target = document.querySelector('[data-apply][data-id="' + m[1] + '"]');
+    if (target) open(target);
+  })();
   $$("[data-close]").forEach(function (b) {
     b.addEventListener("click", close);
   });

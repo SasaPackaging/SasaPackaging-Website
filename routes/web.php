@@ -33,11 +33,15 @@ Route::post('/common/processenq', 'CommonController@processenq');
 Route::post('/common/commentsubmit', 'CommonController@commentsubmit');
 
 Route::post('/common/register_process', 'CommonController@register_process');
+Route::post('/careers/apply', 'CareerController@apply')->middleware('throttle:10,1');
 Route::post('/save_career', 'CommonController@save_career');
 Route::post('/send_quote', 'Site\QuoteController@store')->middleware('throttle:10,1');
 
 // ADMIN ROUTES REMOVED - admin panel is being rebuilt from scratch.
 // New admin routes will live in routes/admin.php
+
+// Events page (exhibitions): latest event on top, earlier ones below. Address from config/news.php
+Route::get(ltrim(config('news.events_url'), '/'), 'Site\EventsController@index');
 
 Route::get('blog/{slug}', array('uses' => 'BaseController@route'));
 Route::get('{slug}', array('uses' => 'BaseController@route'));

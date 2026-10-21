@@ -56,6 +56,8 @@ class RecordEditor
 
             if ($type === 'status') {
                 $rules[$f['name']] = ['required', Rule::in(['Yes', 'No'])];
+            } elseif ($type === 'select') {
+                $rules[$f['name']] = array_merge($base, [Rule::in(array_keys($f['options']))]);
             } elseif ($type === 'number') {
                 $rules[$f['name']] = array_merge($base, ['integer', 'min:0']);
             } else {
@@ -91,6 +93,11 @@ class RecordEditor
         }
 
         return $values;
+    }
+
+    public function delete(array $def, $id)
+    {
+        DB::table($def['table'])->where('id', $id)->delete();
     }
 
     public function update(array $def, $id, array $values)

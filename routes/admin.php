@@ -64,11 +64,15 @@ Route::middleware('admin.auth')->group(function () {
         Route::put('landing/{group}', 'ContentGroupController@update')->name('landing.update');
         Route::delete('landing/{group}', 'ContentGroupController@reset')->name('landing.reset');
 
+        // News & events
+        Route::resource('news', 'NewsEventController')->except(['show'])->parameters(['news' => 'id']);
+
         Route::get('records/{table}', 'RecordController@index')->name('records.index');
         Route::get('records/{table}/create', 'RecordController@create')->name('records.create');
         Route::post('records/{table}', 'RecordController@store')->name('records.store');
         Route::get('records/{table}/{id}/edit', 'RecordController@edit')->name('records.edit');
         Route::put('records/{table}/{id}', 'RecordController@update')->name('records.update');
+        Route::delete('records/{table}/{id}', 'RecordController@destroy')->name('records.destroy');
     });
 
     // 3+. (Services, Projects, Products ... are added here step by step)

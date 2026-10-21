@@ -2,6 +2,7 @@
 @extends('layouts.app')
 
 @section('customstyle')
+<link href="{{ url('/') }}/public/assets/main/css/sasa-news-modal.css" rel="stylesheet">
 @stop
 
 @section('header')
@@ -28,7 +29,17 @@ $data_services    = App\Model\Cms::whereRaw(" status = 'Yes' AND p_id=24 ")->ord
 // News: wrapped so a missing table can never break the home page.
 $sx_news = [];
 try {
-	$sx_news = App\Model\Posts::where('status', 'Yes')->orderBy('post_date', 'desc')->limit((int) config('landing.news.limit', 3))->get()->toArray();
+	// Admin > News & events (table news_events). Same keys the news / ticker sections already use.
+	$sx_news = App\Models\NewsEvent::live()->orderByDesc('published_at')->orderByDesc('id')->limit((int) config('landing.news.limit', 3))->get()->map(function ($n) {
+		return [
+			'heading'   => $n->title,
+			'Contents'  => $n->summary,
+			'image_url' => $n->image_url,
+			'post_date' => $n->shown_date->format('Y-m-d'),
+			'type'      => $n->type_label,
+			'href'      => $n->link,
+		];
+	})->all();
 } catch (\Throwable $ex) {
 	$sx_news = [];
 }

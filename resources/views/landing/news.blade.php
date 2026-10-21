@@ -30,24 +30,24 @@ $nw_topics = (array) config('landing.news.topics', ['Exhibitions', 'Certificatio
 			@php
 				$n_ts   = !empty($post['post_date']) ? strtotime($post['post_date']) : false;
 				$n_text = isset($post['Contents']) ? trim(strip_tags(html_entity_decode((string) $post['Contents']))) : '';
-				$n_href = !empty($post['slug']) ? url('/blog/' . $post['slug']) : '';
 			@endphp
 			<article class="nw__card" style="--k: {{ $k }}">
 				<div class="nw__img">
-					@if (!empty($post['image']))
-						<img src="{{ url('/public/upload/post/' . $post['image']) }}" alt="" loading="lazy">
+					@if (!empty($post['image_url']))
+						<img src="{{ $post['image_url'] }}" alt="" loading="lazy">
 					@else
 						<span class="nw__ph" aria-hidden="true"><x-site.icon name="image" /></span>
 					@endif
 					@if ($n_ts)
 					<time class="nw__date" datetime="{{ date('Y-m-d', $n_ts) }}"><b>{{ date('d', $n_ts) }}</b>{{ date('M Y', $n_ts) }}</time>
 					@endif
+					@if (!empty($post['type']))<em class="nw__type">{{ $post['type'] }}</em>@endif
 					<i class="nw__sheen" aria-hidden="true"></i>
 				</div>
 				<div class="nw__body">
-					<h3 class="nw__title">@if ($n_href !== '')<a href="{{ $n_href }}" class="nw__link">{{ $post['heading'] }}</a>@else{{ $post['heading'] }}@endif</h3>
+					<h3 class="nw__title"><a href="{{ $post['href'] }}" class="nw__link">{{ $post['heading'] }}</a></h3>
 					@if ($n_text !== '')<p class="nw__text">{{ $n_text }}</p>@endif
-					@if ($n_href !== '')<span class="nw__more" aria-hidden="true">Read more <x-site.icon name="arrow" /></span>@endif
+					<a href="{{ $post['href'] }}" class="nw__more" tabindex="-1" aria-hidden="true">{{ config('landing.news.read_more') }} <x-site.icon name="arrow" /></a>
 				</div>
 			</article>
 			@endforeach

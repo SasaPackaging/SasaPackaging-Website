@@ -32,7 +32,7 @@
 					<span class="sxi-ph sxa-ph-big {{ $h_n ? '' : 'is-on' }}">{!! sxa_icon($h_kind ?? 'default') !!}</span>
 				</div>
 			@endif
-			<div class="sxi-badge"><i>{!! sxa_icon($h_kind ?? 'default') !!}</i><span><b>{{ $h_eyebrow ?: 'SASA Packaging' }}</b>Who we are</span></div>
+			<div class="sxi-badge"><i>{!! sxa_icon($h_kind ?? 'default') !!}</i><span><b>{{ $h_eyebrow ?: 'SASA Packaging' }}</b>{{ $h_badge ?? 'Who we are' }}</span></div>
 		</div>
 	</div>
 </section>

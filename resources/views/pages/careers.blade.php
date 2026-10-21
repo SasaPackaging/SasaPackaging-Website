@@ -45,7 +45,7 @@ $years  = range((int) date('Y') + 6, 1990);
 
 	<section class="sxi-section">
 		<div class="sxi-wrap">
-			<div class="sxc-top">
+			<div class="sxc-top" id="open-positions">
 				<h2>Open positions</h2>
 				<span>{{ count($openings) }} {{ count($openings) === 1 ? 'role' : 'roles' }} open</span>
 			</div>

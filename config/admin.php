@@ -104,7 +104,7 @@ return [
                 ['label' => 'Certificates',    'route' => 'admin.certificates.index', 'icon' => 'award',    'active' => 'admin.certificates.*', 'permission' => 'content'],
                 ['label' => 'News & events',   'route' => 'admin.news.index',         'icon' => 'calendar', 'active' => 'admin.news.*', 'permission' => 'content'],
                 ['label' => 'Partners',        'route' => 'admin.partners.index',     'icon' => 'handshake', 'active' => 'admin.partners.*', 'permission' => 'content'],
-                ['label' => 'Careers',         'route' => 'admin.careers.index',      'icon' => 'briefcase', 'active' => 'admin.careers.*', 'permission' => 'content'],
+                ['label' => 'Careers',         'route' => 'admin.records.index', 'params' => ['table' => 'openings'], 'icon' => 'briefcase', 'permission' => 'content'],
             ],
         ],
         [

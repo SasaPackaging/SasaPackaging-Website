@@ -57,6 +57,16 @@ class RecordController extends Controller
         return view('admin.records.form', ['def' => $def, 'row' => $this->editor->row($def, $id) ?: abort(404)]);
     }
 
+    public function destroy($table, $id)
+    {
+        $def = $this->editor->find($table) ?: abort(404);
+        abort_unless(!empty($def['deletable']), 404);
+
+        $this->editor->delete($def, $id);
+
+        return redirect()->route('admin.records.index', $table)->with('success', 'Deleted.');
+    }
+
     public function update(Request $request, $table, $id)
     {
         $def = $this->editor->find($table) ?: abort(404);

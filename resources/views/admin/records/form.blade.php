@@ -15,11 +15,13 @@
       @unless($isNew) @method('PUT') @endunless
 
       @foreach($def['fields'] as $f)
-        @php $val = $isNew ? ($f['type'] === 'status' ? 'Yes' : '') : $row->{$f['name']}; @endphp
+        @php $val = $isNew ? ($f['type'] === 'status' ? 'Yes' : ($f['default'] ?? '')) : $row->{$f['name']}; @endphp
         @if($f['type'] === 'rich')
           <x-admin.rich-text :name="$f['name']" :label="$f['label']" :value="$val" />
         @elseif($f['type'] === 'textarea')
           <x-admin.textarea :name="$f['name']" :label="$f['label']" :value="$val" :hint="$f['hint'] ?? null" rows="4" />
+        @elseif($f['type'] === 'select')
+          <x-admin.select :name="$f['name']" :label="$f['label']" :options="$f['options']" :value="$val" :hint="$f['hint'] ?? null" />
         @elseif($f['type'] === 'status')
           <x-admin.select :name="$f['name']" :label="$f['label']" :options="['Yes' => 'Yes, show it', 'No' => 'No, hide it']" :value="$val" />
         @else

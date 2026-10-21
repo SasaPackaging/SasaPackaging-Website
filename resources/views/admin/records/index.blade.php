@@ -32,7 +32,12 @@
                   </td>
                 @endif
               @endforeach
-              <td class="is-right"><x-admin.button :href="route('admin.records.edit', [$def['key'], $row->id])" variant="ghost" size="sm">Edit</x-admin.button></td>
+              <td class="is-right">
+                <div class="adm-row" style="justify-content:flex-end">
+                  <x-admin.button :href="route('admin.records.edit', [$def['key'], $row->id])" variant="ghost" size="sm">Edit</x-admin.button>
+                  @if(!empty($def['deletable']))<x-admin.delete-form :action="route('admin.records.destroy', [$def['key'], $row->id])" message="Delete this {{ $def['singular'] }} for good?" />@endif
+                </div>
+              </td>
             </tr>
           @endforeach
           </tbody>
