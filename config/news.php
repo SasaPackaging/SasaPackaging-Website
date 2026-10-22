@@ -11,14 +11,12 @@ return [
     'types' => [
         'news'   => 'News',
         'event'  => 'Event',
-        'hiring' => 'Hiring',
     ],
 
     // Where "Read more" goes for each type (shown in the admin form as a reminder)
     'type_hints' => [
         'news'   => 'News (certifications, achievements): opens the Certificates page.',
         'event'  => 'Event (exhibitions): opens the Events page with this event on top.',
-        'hiring' => 'Hiring: opens the open positions on the Careers page. Shown only while there is at least one open position.',
     ],
 
     // admin list: rows per page

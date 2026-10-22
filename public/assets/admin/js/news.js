@@ -1,16 +1,12 @@
-/* SASA Admin — News & events form: event date / place show for "Event", the positions list for "Hiring". */
+/* SASA Admin — News & events form: the event date / place only show when the type is "Event". */
 (function () {
   "use strict";
   var form = document.querySelector("[data-news-form]");
   if (!form) { return; }
   var type = form.querySelector("[data-news-type]");
-  var box = form.querySelector("[data-news-event]");
-  var hiring = form.querySelector("[data-news-hiring]");
-  if (!type || !box) { return; }
-  function sync() {
-    box.hidden = type.value !== "event";
-    if (hiring) { hiring.hidden = type.value !== "hiring"; }
-  }
+  var event = form.querySelector("[data-news-event]");
+  if (!type) { return; }
+  function sync() { if (event) { event.hidden = type.value !== "event"; } }
   type.addEventListener("change", sync);
   sync();
 })();

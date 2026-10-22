@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * One news story, event or hiring announcement (table: news_events).
+ * One news story or event (table: news_events).
  */
 class NewsEvent extends Model
 {
@@ -33,11 +33,6 @@ class NewsEvent extends Model
     public function getIsEventAttribute()
     {
         return $this->type === 'event';
-    }
-
-    public function getIsHiringAttribute()
-    {
-        return $this->type === 'hiring';
     }
 
     public function getTypeLabelAttribute()
@@ -91,42 +86,15 @@ class NewsEvent extends Model
         return null;
     }
 
-    /**
-     * Items the public site may show: published, and Hiring items only while the Careers page really has an open position
-     * (so the home page never announces a job that the Careers page cannot show).
-     */
+    /** Items the public site may show: published ones of a type that still exists in config/news.php. */
     public function scopeLive($query)
     {
-        $query->where('is_published', true);
-
-        if (!static::hasOpenRoles()) {
-            $query->where('type', '!=', 'hiring');
-        }
-
-        return $query;
+        return $query->where('is_published', true)->whereIn('type', array_keys(config('news.types')));
     }
 
-    public static function hasOpenRoles()
-    {
-        static $has;
-
-        if ($has === null) {
-            try {
-                $has = Schema::hasTable('tbl_job_openings') && DB::table('tbl_job_openings')->where('status', 'Yes')->exists();
-            } catch (\Throwable $e) {
-                $has = false;
-            }
-        }
-
-        return $has;
-    }
-
-    /** Where "Read more" leads: news -> Certificates, hiring -> Careers, event -> Events page. */
+    /** Where "Read more" leads: news -> Certificates, event -> Events page. */
     public function getLinkAttribute()
     {
-        if ($this->type === 'hiring') {
-            return url(config('news.careers_url'));
-        }
         if ($this->type === 'event') {
             return url(config('news.events_url')) . '?event=' . $this->slug;
         }

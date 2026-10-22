@@ -6,7 +6,7 @@ use App\Models\NewsEvent;
 use Illuminate\Support\Str;
 
 /**
- * Saving a news / event / hiring item: unique address (slug), pictures.
+ * Saving a news / event: unique address (slug), pictures.
  */
 class NewsEventService
 {

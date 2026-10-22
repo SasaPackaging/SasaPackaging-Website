@@ -40,6 +40,13 @@ try {
 			'href'      => $n->link,
 		];
 	})->all();
+
+	// "We are hiring" card: automatic, from the open positions in Admin > Careers (first card)
+	$sx_hiring = App\Services\News\HiringAnnouncement::card();
+	if ($sx_hiring) {
+		array_unshift($sx_news, $sx_hiring);
+		$sx_news = array_slice($sx_news, 0, (int) config('landing.news.limit', 3));
+	}
 } catch (\Throwable $ex) {
 	$sx_news = [];
 }

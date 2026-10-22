@@ -145,6 +145,12 @@ return [
         'lead'          => 'Exhibitions, certifications and new openings, the latest from SASA Packaging.',
         'limit'         => 6,
         'read_more'      => 'Read more',
+        // "We are hiring" card: built by itself from Admin > Careers (:count = number, :positions = titles)
+        'hiring_label'   => 'Hiring',
+        'hiring_title'   => 'We are hiring',
+        'hiring_text'    => 'Join our team. Open positions: :positions.',
+        'hiring_more'    => '+ :count more',
+        'hiring_titles_shown' => 3,
         'topics'        => ['Exhibitions', 'Certifications', 'New openings'],
         'ticker_label'  => 'News & Events',
         'ticker_empty'  => 'No updates yet — exhibitions, certifications and new openings will be announced here.',

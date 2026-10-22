@@ -154,6 +154,9 @@ return [
                 $text('landing.news.lead', 'Intro text', ['raw' => true]),
                 ['key' => 'landing.news.limit', 'label' => 'How many items to show on the home page', 'type' => 'number'],
                 $text('landing.news.read_more', '"Read more" text on cards'),
+                $text('landing.news.hiring_label', 'Hiring card: tag'),
+                $text('landing.news.hiring_title', 'Hiring card: heading'),
+                ['key' => 'landing.news.hiring_text', 'label' => 'Hiring card: text (:positions = job titles, :count = how many)', 'type' => 'textarea'],
                 $text('landing.news.ticker_label', 'Top ticker label'),
                 ['key' => 'landing.news.ticker_empty', 'label' => 'Top ticker when empty', 'type' => 'textarea'],
                 $text('landing.news.empty_title', 'Empty state: heading'),
@@ -244,7 +247,7 @@ return [
 
         'openings' => [
             'table' => 'tbl_job_openings', 'label' => 'Careers: open positions', 'singular' => 'position', 'icon' => 'briefcase',
-            'about' => 'Jobs shown on the Careers page. A Hiring news item appears on the home page only while at least one position is shown here.',
+            'about' => 'Jobs shown on the Careers page. When at least one position is shown here, a "We are hiring" card appears by itself in the home page News & events section.',
             'title' => 'title', 'order' => 'sort_order', 'creatable' => true, 'deletable' => true,
             'list' => ['title' => 'Position', 'department' => 'Department', 'status' => 'Status'],
             'fields' => [
