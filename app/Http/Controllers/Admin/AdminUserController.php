@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Concerns\GuardsActions;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SaveAdminUserRequest;
 use App\Models\Admin;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Hash;
  */
 class AdminUserController extends Controller
 {
+    use GuardsActions;
+
     public function index()
     {
         return view('admin.admin-users.index', [
@@ -23,14 +26,16 @@ class AdminUserController extends Controller
 
     public function store(SaveAdminUserRequest $request)
     {
-        Admin::create([
-            'name'     => $request->input('name'),
-            'email'    => $request->input('email'),
-            'role'     => $request->input('role'),
-            'password' => Hash::make($request->input('password')),
-        ]);
+        return $this->attempt(function () use ($request) {
+            Admin::create([
+                'name'     => $request->input('name'),
+                'email'    => $request->input('email'),
+                'role'     => $request->input('role'),
+                'password' => Hash::make($request->input('password')),
+            ]);
 
-        return redirect()->route('admin.admin-users.index')->with('success', 'Admin added. They can log in with that email and password.');
+            return redirect()->route('admin.admin-users.index')->with('success', 'Admin added. They can log in with that email and password.');
+        }, 'Could not add the admin. Please try again.');
     }
 
     public function edit($id)
@@ -50,17 +55,19 @@ class AdminUserController extends Controller
             return back()->withInput()->with('error', 'This is the only super admin, so its role cannot be changed.');
         }
 
-        $admin->name  = $request->input('name');
-        $admin->email = $request->input('email');
-        $admin->role  = $request->input('role');
+        return $this->attempt(function () use ($admin, $request) {
+            $admin->name  = $request->input('name');
+            $admin->email = $request->input('email');
+            $admin->role  = $request->input('role');
 
-        if ($request->filled('password')) {
-            $admin->password = Hash::make($request->input('password'));
-        }
+            if ($request->filled('password')) {
+                $admin->password = Hash::make($request->input('password'));
+            }
 
-        $admin->save();
+            $admin->save();
 
-        return redirect()->route('admin.admin-users.index')->with('success', 'Changes saved.');
+            return redirect()->route('admin.admin-users.index')->with('success', 'Changes saved.');
+        }, 'Could not save the changes. Please try again.');
     }
 
     public function destroy($id)
@@ -75,9 +82,11 @@ class AdminUserController extends Controller
             return back()->with('error', 'The only super admin cannot be deleted.');
         }
 
-        $admin->delete();
+        return $this->attempt(function () use ($admin) {
+            $admin->delete();
 
-        return redirect()->route('admin.admin-users.index')->with('success', 'Admin removed.');
+            return redirect()->route('admin.admin-users.index')->with('success', 'Admin removed.');
+        }, 'Could not remove the admin. Please try again.', false);
     }
 
     protected function superCount()

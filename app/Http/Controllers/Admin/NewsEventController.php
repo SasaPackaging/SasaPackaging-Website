@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Concerns\GuardsActions;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SaveNewsEventRequest;
 use App\Models\NewsEvent;
@@ -13,6 +14,8 @@ use Illuminate\Http\Request;
  */
 class NewsEventController extends Controller
 {
+    use GuardsActions;
+
     protected $service;
 
     public function __construct(NewsEventService $service)
@@ -44,9 +47,11 @@ class NewsEventController extends Controller
 
     public function store(SaveNewsEventRequest $request)
     {
-        $item = $this->service->save(new NewsEvent(), $request->validated(), (array) $request->file('images'));
+        return $this->attempt(function () use ($request) {
+            $item = $this->service->save(new NewsEvent(), $request->validated(), (array) $request->file('images'));
 
-        return redirect()->route('admin.news.edit', $item->id)->with('success', 'Added. ' . ($item->is_published ? 'It is live on the website.' : 'It is hidden until you publish it.'));
+            return redirect()->route('admin.news.edit', $item->id)->with('success', 'Added. ' . ($item->is_published ? 'It is live on the website.' : 'It is hidden until you publish it.'));
+        }, 'Could not save. Nothing was added. Please try again (or use a smaller picture).');
     }
 
     public function edit($id)
@@ -57,15 +62,21 @@ class NewsEventController extends Controller
     public function update(SaveNewsEventRequest $request, $id)
     {
         $item = NewsEvent::findOrFail($id);
-        $this->service->save($item, $request->validated(), (array) $request->file('images'), (array) $request->input('remove_images', []));
+        return $this->attempt(function () use ($item, $request) {
+            $this->service->save($item, $request->validated(), (array) $request->file('images'), (array) $request->input('remove_images', []));
 
-        return redirect()->route('admin.news.edit', $item->id)->with('success', 'Saved.');
+            return redirect()->route('admin.news.edit', $item->id)->with('success', 'Saved.');
+        }, 'Could not save. Nothing was changed. Please try again (or use a smaller picture).');
     }
 
     public function destroy($id)
     {
-        $this->service->delete(NewsEvent::findOrFail($id));
+        $item = NewsEvent::findOrFail($id);
 
-        return redirect()->route('admin.news.index')->with('success', 'Deleted.');
+        return $this->attempt(function () use ($item) {
+            $this->service->delete($item);
+
+            return redirect()->route('admin.news.index')->with('success', 'Deleted.');
+        }, 'Could not delete it. Please try again.', false);
     }
 }

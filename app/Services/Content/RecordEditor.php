@@ -2,6 +2,7 @@
 
 namespace App\Services\Content;
 
+use App\Support\HtmlCleaner;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
@@ -80,7 +81,7 @@ class RecordEditor
             if ($f['type'] === 'number') {
                 $v = ($v === null || $v === '') ? 0 : (int) $v;
             } elseif ($f['type'] === 'rich') {
-                $v = $this->cleanHtml((string) $v);
+                $v = HtmlCleaner::clean($v, true);
             } else {
                 $v = trim((string) $v);
             }
@@ -112,16 +113,5 @@ class RecordEditor
         }
 
         return DB::table($def['table'])->insertGetId($values);
-    }
-
-    /** Keep normal formatting, remove anything that can run code. */
-    public function cleanHtml($html)
-    {
-        $allowed = '<p><br><strong><b><em><i><u><ul><ol><li><a><h2><h3><h4><h5><blockquote><span><div><img><table><thead><tbody><tr><td><th><hr><sub><sup>';
-        $html = strip_tags($html, $allowed);
-        $html = preg_replace('/\son\w+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $html);
-        $html = preg_replace('/(href|src)\s*=\s*("|\')\s*javascript:[^"\']*\2/i', '$1=$2#$2', $html);
-
-        return trim($html);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Concerns\GuardsActions;
 use App\Http\Controllers\Controller;
 use App\Services\Content\GroupEditor;
 use Illuminate\Http\Request;
@@ -12,6 +13,8 @@ use Illuminate\Http\Request;
  */
 class ContentGroupController extends Controller
 {
+    use GuardsActions;
+
     protected $editor;
 
     public function __construct(GroupEditor $editor)
@@ -46,9 +49,11 @@ class ContentGroupController extends Controller
         $def = $this->editor->find($group) ?: abort(404);
 
         $request->validate($this->editor->rules($def));
-        $this->editor->save($def, (array) $request->input('f', []));
+        return $this->attempt(function () use ($def, $request, $group) {
+            $this->editor->save($def, (array) $request->input('f', []));
 
-        return redirect()->route('admin.landing.edit', $group)->with('success', 'Saved. The website shows the new wording now.');
+            return redirect()->route('admin.landing.edit', $group)->with('success', 'Saved. The website shows the new wording now.');
+        }, 'Could not save. Please try again.');
     }
 
     public function reset($group)
@@ -59,8 +64,10 @@ class ContentGroupController extends Controller
             abort(404);
         }
 
-        $this->editor->reset($def);
+        return $this->attempt(function () use ($def, $group) {
+            $this->editor->reset($def);
 
-        return redirect()->route('admin.landing.edit', $group)->with('success', 'Original wording restored.');
+            return redirect()->route('admin.landing.edit', $group)->with('success', 'Original wording restored.');
+        }, 'Could not restore the wording. Please try again.', false);
     }
 }

@@ -15,6 +15,8 @@ return [
         'success' => 'Thank you! Your quote request has been received. Your reference is :reference.',
     ],
     'error' => [
+        'phone'     => 'Please enter a valid phone number (7 to 15 digits, for example +92 300 1234567).',
+        'format'    => 'The :attribute contains characters that are not allowed.',
         'generic'   => 'Something went wrong. Please try again.',
         'too_many'  => 'Too many attempts. Please wait a minute and try again.',
         'file_type' => 'This file type is not allowed. Allowed: :types.',

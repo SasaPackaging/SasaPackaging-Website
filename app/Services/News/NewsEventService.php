@@ -3,6 +3,7 @@
 namespace App\Services\News;
 
 use App\Models\NewsEvent;
+use App\Support\HtmlCleaner;
 use Illuminate\Support\Str;
 
 /**
@@ -21,7 +22,7 @@ class NewsEventService
         $item->type            = $type;
         $item->title           = $data['title'];
         $item->summary         = ($data['summary'] ?? null) ?: null;
-        $item->body            = $this->cleanHtml((string) ($data['body'] ?? '')) ?: null;
+        $item->body            = HtmlCleaner::clean($data['body'] ?? '') ?: null;
         $item->video_url       = ($data['video_url'] ?? null) ?: null;
         $item->event_date      = $type === 'event' ? (($data['event_date'] ?? null) ?: null) : null;
         $item->location        = $type === 'event' ? (($data['location'] ?? null) ?: null) : null;
@@ -32,20 +33,29 @@ class NewsEventService
             $item->slug = $this->uniqueSlug($data['title']);
         }
 
-        $images = (array) $item->images;
+        $images  = (array) $item->images;
+        $removed = array_values(array_intersect($removeImages, $images));
+        $images  = array_values(array_diff($images, $removed));
+        $stored  = [];
 
-        foreach ($removeImages as $name) {
-            if (in_array($name, $images, true)) {
-                $this->deleteFile($name);
-                $images = array_values(array_diff($images, [$name]));
+        try {
+            foreach ($uploads as $file) {
+                $images[] = $stored[] = $this->storeFile($file, $data['title']);
             }
+            $item->images = $images ?: null;
+            $item->save();
+        } catch (\Throwable $e) {
+            // nothing was saved, so the pictures just uploaded must not stay behind
+            foreach ($stored as $name) {
+                $this->deleteFile($name);
+            }
+            throw $e;
         }
-        foreach ($uploads as $file) {
-            $images[] = $this->storeFile($file, $data['title']);
-        }
-        $item->images = $images ?: null;
 
-        $item->save();
+        // old pictures are deleted only after the record is safely saved
+        foreach ($removed as $name) {
+            $this->deleteFile($name);
+        }
 
         return $item;
     }
@@ -73,8 +83,14 @@ class NewsEventService
 
     protected function storeFile($file, $title)
     {
-        $dir  = public_path(trim(config('news.image.dir'), '/'));
-        $name = (Str::slug(Str::limit($title, 40, '')) ?: 'news') . '-' . Str::random(6) . '.' . strtolower($file->getClientOriginalExtension());
+        $dir = public_path(trim(config('news.image.dir'), '/'));
+        // the extension comes from the real file content, never from the name the browser sent
+        $ext = strtolower((string) $file->guessExtension());
+        $ext = $ext === 'jpeg' ? 'jpg' : $ext;
+        if (!in_array($ext, config('news.image.extensions'), true)) {
+            throw new \RuntimeException('Picture type not allowed.');
+        }
+        $name = (Str::slug(Str::limit($title, 40, '')) ?: 'news') . '-' . Str::random(6) . '.' . $ext;
 
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
@@ -90,15 +106,5 @@ class NewsEventService
         if (is_file($path)) {
             @unlink($path);
         }
-    }
-
-    /** Keep normal formatting, remove anything that can run code. */
-    protected function cleanHtml($html)
-    {
-        $html = strip_tags($html, '<p><br><strong><b><em><i><u><ul><ol><li><a><h2><h3><h4><blockquote><span><hr>');
-        $html = preg_replace('/\son\w+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $html);
-        $html = preg_replace('/href\s*=\s*("|\')\s*javascript:[^"\']*\1/i', 'href="#"', $html);
-
-        return trim($html);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Model\JobOpening;
 use App\Model\JobApplication;
@@ -100,30 +101,35 @@ class CareerController extends Controller
             $extra[$q['label']] = $request->input('extra.' . $q['key']);
         }
 
-        JobApplication::create([
-            'job_opening_id' => $opening ? $opening->id : null,
-            'position_title' => $opening ? $opening->title : 'General application',
-            'first_name' => trim($request->input('first_name')),
-            'last_name' => trim($request->input('last_name')),
-            'email' => trim($request->input('email')),
-            'phone' => trim($request->input('phone')),
-            'city' => trim($request->input('city')),
-            'linkedin_url' => $request->input('linkedin_url'),
-            'education_level' => $request->input('education_level'),
-            'degree' => trim($request->input('degree')),
-            'institution' => trim($request->input('institution')),
-            'grad_year' => $request->input('grad_year'),
-            'has_experience' => $request->input('has_experience') === 'yes',
-            'experience_years' => $request->input('experience_years'),
-            'last_employer' => $request->input('last_employer'),
-            'last_title' => $request->input('last_title'),
-            'previous_salary' => $unpaid ? 'N/A' : $request->input('previous_salary'),
-            'is_unpaid' => $unpaid,
-            'expected_salary' => $request->input('expected_salary'),
-            'extra_answers' => json_encode($extra),
-            'cv_path' => $cvPath,
-            'ip' => $request->ip(),
-        ]);
+        try {
+            JobApplication::create([
+                'job_opening_id' => $opening ? $opening->id : null,
+                'position_title' => $opening ? $opening->title : 'General application',
+                'first_name' => trim($request->input('first_name')),
+                'last_name' => trim($request->input('last_name')),
+                'email' => trim($request->input('email')),
+                'phone' => trim($request->input('phone')),
+                'city' => trim($request->input('city')),
+                'linkedin_url' => $request->input('linkedin_url'),
+                'education_level' => $request->input('education_level'),
+                'degree' => trim($request->input('degree')),
+                'institution' => trim($request->input('institution')),
+                'grad_year' => $request->input('grad_year'),
+                'has_experience' => $request->input('has_experience') === 'yes',
+                'experience_years' => $request->input('experience_years'),
+                'last_employer' => $request->input('last_employer'),
+                'last_title' => $request->input('last_title'),
+                'previous_salary' => $unpaid ? 'N/A' : $request->input('previous_salary'),
+                'is_unpaid' => $unpaid,
+                'expected_salary' => $request->input('expected_salary'),
+                'extra_answers' => json_encode($extra),
+                'cv_path' => $cvPath,
+                'ip' => $request->ip(),
+            ]);
+        } catch (\Throwable $e) {
+            Storage::delete($cvPath); // no application row, so do not keep an orphan CV
+            throw $e;
+        }
 
         return response()->json($thanks);
     }

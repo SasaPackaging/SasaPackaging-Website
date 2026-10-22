@@ -10,9 +10,9 @@ class StoreContactRequest extends SiteFormRequest
     public function rules()
     {
         return [
-            'contact_full_name' => 'required|string|max:120',
-            'contact_email'     => 'required|email|max:150',
-            'contact_phone'     => ['required', 'string', 'max:40', 'regex:/^[0-9+\-\s().]{5,}$/'],
+            'contact_full_name' => $this->nameRules(),
+            'contact_email'     => $this->emailRules(),
+            'contact_phone'     => $this->phoneRules(),
             'contact_subject'   => 'required|string|max:180',
             'contact_message'   => 'required|string|max:5000',
         ];

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Concerns\GuardsActions;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SendReplyRequest;
 use App\Http\Requests\Admin\UpdateInboxStatusRequest;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Auth;
  */
 abstract class InboxController extends Controller
 {
+    use GuardsActions;
+
     /** @return string  model class, e.g. \App\Models\ContactMessage::class */
     abstract protected function model();
 
@@ -66,9 +69,11 @@ abstract class InboxController extends Controller
     public function updateStatus(UpdateInboxStatusRequest $request, $id)
     {
         $item = $this->find($id);
-        $item->changeStatus($request->input('status'));
+        return $this->attempt(function () use ($item, $request) {
+            $item->changeStatus($request->input('status'));
 
-        return back()->with('success', 'Status updated to "' . $item->status_label . '".');
+            return back()->with('success', 'Status updated to "' . $item->status_label . '".');
+        }, 'Could not change the status. Please try again.', false);
     }
 
     public function reply(SendReplyRequest $request, $id, ReplyService $replies)
@@ -96,10 +101,13 @@ abstract class InboxController extends Controller
     public function destroy($id)
     {
         $item = $this->find($id);
-        $this->beforeDelete($item);
-        $item->delete();
 
-        return redirect()->route($this->routeBase() . '.index')->with('success', 'Deleted.');
+        return $this->attempt(function () use ($item) {
+            $this->beforeDelete($item);
+            $item->delete();
+
+            return redirect()->route($this->routeBase() . '.index')->with('success', 'Deleted.');
+        }, 'Could not delete it. Please try again.', false);
     }
 
     /** Hook for children that own extra things (e.g. a file) which must go with the record. */

@@ -4,7 +4,9 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class Handler extends ExceptionHandler
 {
@@ -34,6 +36,18 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
+        // Public forms (contact, quote, careers) are sent by JavaScript and read {status, message}:
+        // an unexpected error must come back as that, not as an HTML error page.
+        // (The error is still written to storage/logs.)
+        $this->renderable(function (\Throwable $e, $request) {
+            if ($e instanceof ValidationException || $e instanceof HttpExceptionInterface || !$request->isMethod('post')
+                || !$request->is('send_quote', 'common/contact_process', 'careers/apply')) {
+                return null;
+            }
+
+            return response()->json(['status' => 'error', 'message' => __('inbox.error.generic')], 500);
+        });
+
         // Admin panel: an expired / stale form (HTTP 419 "Page Expired") must not be a dead end.
         // This happens e.g. when the login page is submitted twice or opened with the Back button.
         $this->renderable(function (HttpException $e, $request) {

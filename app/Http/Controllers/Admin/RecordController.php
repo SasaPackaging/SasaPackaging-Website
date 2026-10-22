@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Concerns\GuardsActions;
 use App\Http\Controllers\Controller;
 use App\Services\Content\RecordEditor;
 use Illuminate\Http\Request;
@@ -12,6 +13,8 @@ use Illuminate\Http\Request;
  */
 class RecordController extends Controller
 {
+    use GuardsActions;
+
     protected $editor;
 
     public function __construct(RecordEditor $editor)
@@ -41,13 +44,11 @@ class RecordController extends Controller
 
         $request->validate($this->editor->rules($def));
 
-        try {
+        return $this->attempt(function () use ($def, $request, $table) {
             $this->editor->create($def, $this->editor->values($def, $request->all()));
-        } catch (\Throwable $e) {
-            return back()->withInput()->with('error', 'Could not add it. Please ask IT support (the table needs extra required columns).');
-        }
 
-        return redirect()->route('admin.records.index', $table)->with('success', 'Added.');
+            return redirect()->route('admin.records.index', $table)->with('success', 'Added.');
+        }, 'Could not add it. Please ask IT support (the table needs extra required columns).');
     }
 
     public function edit($table, $id)
@@ -62,9 +63,11 @@ class RecordController extends Controller
         $def = $this->editor->find($table) ?: abort(404);
         abort_unless(!empty($def['deletable']), 404);
 
-        $this->editor->delete($def, $id);
+        return $this->attempt(function () use ($def, $id, $table) {
+            $this->editor->delete($def, $id);
 
-        return redirect()->route('admin.records.index', $table)->with('success', 'Deleted.');
+            return redirect()->route('admin.records.index', $table)->with('success', 'Deleted.');
+        }, 'Could not delete it. Please try again.', false);
     }
 
     public function update(Request $request, $table, $id)
@@ -73,8 +76,10 @@ class RecordController extends Controller
         $this->editor->row($def, $id) ?: abort(404);
 
         $request->validate($this->editor->rules($def));
-        $this->editor->update($def, $id, $this->editor->values($def, $request->all()));
+        return $this->attempt(function () use ($def, $id, $request, $table) {
+            $this->editor->update($def, $id, $this->editor->values($def, $request->all()));
 
-        return redirect()->route('admin.records.edit', [$table, $id])->with('success', 'Saved. The website shows the change now.');
+            return redirect()->route('admin.records.edit', [$table, $id])->with('success', 'Saved. The website shows the change now.');
+        }, 'Could not save. Please try again.');
     }
 }

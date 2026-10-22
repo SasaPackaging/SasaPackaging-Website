@@ -68,9 +68,9 @@ class StoreQuoteRequest extends SiteFormRequest
                 },
             ],
 
-            'q_full_name'    => 'required|string|max:120',
-            'q_phone'        => ['required', 'string', 'max:40', 'regex:/^[0-9+\-\s().]{5,}$/'],
-            'q_email'        => 'required|email|max:150',
+            'q_full_name'    => $this->nameRules(),
+            'q_phone'        => $this->phoneRules(),
+            'q_email'        => $this->emailRules(),
             'q_company'      => 'required|string|max:150',
             'q_message'      => 'nullable|string|max:3000',
         ];
