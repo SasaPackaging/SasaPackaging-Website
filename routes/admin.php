@@ -67,6 +67,9 @@ Route::middleware('admin.auth')->group(function () {
         // News & events
         Route::resource('news', 'NewsEventController')->except(['show'])->parameters(['news' => 'id']);
 
+        // Partners (home page logo slider)
+        Route::resource('partners', 'PartnerController')->except(['show'])->parameters(['partners' => 'id']);
+
         Route::get('records/{table}', 'RecordController@index')->name('records.index');
         Route::get('records/{table}/create', 'RecordController@create')->name('records.create');
         Route::post('records/{table}', 'RecordController@store')->name('records.store');
