@@ -67,6 +67,10 @@ Route::middleware('admin.auth')->group(function () {
         // News & events
         Route::resource('news', 'NewsEventController')->except(['show'])->parameters(['news' => 'id']);
 
+        // Services and Products (with pictures)
+        Route::resource('services', 'ServiceController')->except(['show'])->parameters(['services' => 'id']);
+        Route::resource('products', 'ProductController')->except(['show'])->parameters(['products' => 'id']);
+
         // Partners (home page logo slider)
         Route::resource('partners', 'PartnerController')->except(['show'])->parameters(['partners' => 'id']);
 
