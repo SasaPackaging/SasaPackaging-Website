@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SendReplyRequest;
 use App\Http\Requests\Admin\UpdateInboxStatusRequest;
 use App\Services\Inbox\ReplyService;
+use App\Support\Sanitize;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -34,8 +35,8 @@ abstract class InboxController extends Controller
     public function index(Request $request)
     {
         $model  = $this->model();
-        $status = $request->query('status');
-        $search = trim((string) $request->query('q'));
+        $status = Sanitize::query($request->query('status'), 30); // always plain text, never an array
+        $search = Sanitize::query($request->query('q'));
 
         $items = $model::query()
             ->filterStatus($status)

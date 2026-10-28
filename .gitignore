@@ -22,6 +22,7 @@
 # User uploads - ignore uploaded files, not the directory structure
 /public/upload/*
 !/public/upload/.gitignore
+!/public/upload/.htaccess
 
 # Database dumps and logs
 *.sql

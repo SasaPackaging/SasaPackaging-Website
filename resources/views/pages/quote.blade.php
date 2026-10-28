@@ -46,6 +46,8 @@ $tel    = function ($v) { return preg_replace('/[^0-9+]/', '', (string) $v); };
 				<div class="sxf-card">
 					<form id="form_register" name="form_register" method="post" action="{{ url('send_quote') }}" enctype="multipart/form-data" data-sxf-form data-endpoint="{{ url('send_quote') }}" novalidate>
 						<input type="hidden" name="_token" value="{{ csrf_token() }}">
+						<!-- spam trap: real visitors never see or fill this box -->
+						<input type="text" name="website" value="" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
 
 						{{-- 1. size --}}
 						<div class="sxf-block">

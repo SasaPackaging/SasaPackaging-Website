@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Admin\Concerns\GuardsActions;
 use App\Http\Controllers\Controller;
 use App\Services\Catalog\CatalogEditor;
+use App\Support\Sanitize;
 use Illuminate\Http\Request;
 
 /**
@@ -35,7 +36,7 @@ abstract class CatalogController extends Controller
     {
         $def = $this->def();
 
-        return view('admin.catalog.index', ['def' => $def, 'rows' => $this->editor->paginate($def, trim((string) $request->query('q')))]);
+        return view('admin.catalog.index', ['def' => $def, 'rows' => $this->editor->paginate($def, Sanitize::query($request->query('q')))]);
     }
 
     public function create()

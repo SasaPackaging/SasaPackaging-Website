@@ -28,14 +28,15 @@ Route::get('/machines.html', function () {
 		'description' => 'The machinery and production capabilities behind our packaging solutions.',
 	]);
 });
+// Public forms. Each one is limited to 10 submissions per minute per visitor (stops spam / flooding).
 Route::post('/common/contact_process', 'Site\ContactController@store')->middleware('throttle:10,1');
-Route::post('/common/processenq', 'CommonController@processenq');
-Route::post('/common/commentsubmit', 'CommonController@commentsubmit');
-
-Route::post('/common/register_process', 'CommonController@register_process');
 Route::post('/careers/apply', 'CareerController@apply')->middleware('throttle:10,1');
-Route::post('/save_career', 'CommonController@save_career');
 Route::post('/send_quote', 'Site\QuoteController@store')->middleware('throttle:10,1');
+
+// SECURITY: the old routes /common/processenq, /common/commentsubmit, /common/register_process and
+// /save_career were removed. Their code no longer exists (they only caused errors), and /save_career
+// accepted ANY file type into a public folder, which would let an attacker upload a PHP file and take
+// over the server. The Careers page uses /careers/apply, which is safe.
 
 // ADMIN ROUTES REMOVED - admin panel is being rebuilt from scratch.
 // New admin routes will live in routes/admin.php
@@ -43,5 +44,15 @@ Route::post('/send_quote', 'Site\QuoteController@store')->middleware('throttle:1
 // Events page (exhibitions): latest event on top, earlier ones below. Address from config/news.php
 Route::get(ltrim(config('news.events_url'), '/'), 'Site\EventsController@index');
 
+// Shop Now: Pinterest-style product grid + product page. Addresses come from config/shop.php.
+// (Placed before the catch-all "{slug}" route below, otherwise the CMS lookup would answer first.)
+Route::get(ltrim(config('shop.url'), '/'), 'Site\ShopController@index');
+Route::get(trim(config('shop.product_url'), '/') . '/{slug}', 'Site\ShopController@show')->where('slug', '[A-Za-z0-9\-]+');
+
+// Private feedback link for invited partners (one use per link). Throttled against guessing / flooding.
+Route::get('feedback/{token}', 'Site\FeedbackController@show')->where('token', '[A-Za-z0-9]{20,64}')->middleware('throttle:30,1');
+Route::post('feedback/{token}', 'Site\FeedbackController@store')->where('token', '[A-Za-z0-9]{20,64}')->middleware('throttle:10,1');
+
+// Anything else is looked up in the CMS (BaseController shows a proper 404 page when nothing matches).
 Route::get('blog/{slug}', array('uses' => 'BaseController@route'));
 Route::get('{slug}', array('uses' => 'BaseController@route'));

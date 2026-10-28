@@ -9,6 +9,14 @@ $rv_items = (array) config('landing.testimonials.items', []);
 $rv_rating = (float) config('landing.testimonials.rating', 5);
 $rv_ph    = (int) config('landing.testimonials.placeholder_count', 3);
 
+/* Reviews chosen in Admin > Reviews (shown ones only). Their average becomes the overall rating.
+   When none is shown yet, the old config/landing.php list and rating are used, exactly as before. */
+$rv_db = \App\Models\Review::forSite();
+if (count($rv_db['items']) > 0) {
+	$rv_items  = $rv_db['items'];
+	$rv_rating = (float) $rv_db['average'];
+}
+
 /* five stars; each fills from empty to gold (supports 4.5 etc.) */
 $rv_stars = function ($value, $cls = '') {
 	$path = 'M12 2.5l2.94 5.96 6.58.96-4.76 4.64 1.12 6.55L12 17.52l-5.88 3.09 1.12-6.55L2.48 9.42l6.58-.96z';

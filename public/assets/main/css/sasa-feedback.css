@@ -1,0 +1,30 @@
+/* SASA feedback page (/feedback/{token}). Scoped to .fbk. */
+.fbk { background: var(--sx-ivory, #fefaf3); color: var(--sx-ink, #1f2d22); padding: clamp(36px, 7vw, 84px) 0; font-family: var(--sx-font-body, "Inter", system-ui, sans-serif); }
+.fbk *, .fbk *::before, .fbk *::after { box-sizing: border-box; }
+.fbk-wrap { width: min(640px, calc(100% - 32px)); margin-inline: auto; }
+.fbk-card { background: #fff; border: 1px solid var(--sx-line, #e4e9df); border-radius: 24px; padding: clamp(24px, 5vw, 44px); box-shadow: 0 18px 44px rgba(31,45,34,.07); }
+.fbk-eyebrow { margin: 0 0 8px; font-size: 12.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--sx-sage-ink, #4d6b4f); }
+.fbk h1 { margin: 0 0 10px; font-family: var(--sx-font-head, "Outfit", sans-serif); font-weight: 600; font-size: clamp(1.7rem, 4vw, 2.3rem); line-height: 1.1; }
+.fbk-lead { margin: 0 0 24px; color: #5f6f63; line-height: 1.65; }
+.fbk-alert { background: #fbeaea; border: 1px solid #efc1c1; color: #8a2b2b; border-radius: 12px; padding: 10px 14px; margin-bottom: 18px; font-size: 14px; }
+.fbk-alert p { margin: 2px 0; }
+.fbk fieldset { border: 0; margin: 0 0 20px; padding: 0; }
+.fbk legend { font-weight: 600; margin-bottom: 8px; padding: 0; }
+.fbk-field { margin-bottom: 18px; }
+.fbk-field label { display: block; font-weight: 600; margin-bottom: 6px; }
+.fbk-field input, .fbk-field textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--sx-line-strong, #d3decf); border-radius: 12px; font: inherit; background: #fff; color: inherit; }
+.fbk-field input:focus, .fbk-field textarea:focus { outline: 3px solid rgba(132,162,130,.45); border-color: var(--sx-sage-deep, #84a282); }
+/* star picker: radios are listed 5..1 and shown in reverse, so "all stars up to the chosen one" can be lit with CSS only */
+.fbk-stars { display: inline-flex; flex-direction: row-reverse; gap: 4px; }
+.fbk-stars input { position: absolute; opacity: 0; pointer-events: none; }
+.fbk-stars label { font-size: 2.4rem; line-height: 1; color: #d6ddd3; cursor: pointer; transition: color .15s, transform .15s; }
+.fbk-stars label:hover, .fbk-stars label:hover ~ label, .fbk-stars input:checked ~ label { color: #e8b923; }
+.fbk-stars label:hover { transform: scale(1.12); }
+.fbk-stars input:focus-visible + label { outline: 3px solid var(--sx-sage-deep, #84a282); outline-offset: 3px; border-radius: 6px; }
+.fbk-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.fbk-btn { display: inline-flex; align-items: center; justify-content: center; padding: 14px 28px; border: 0; border-radius: 999px; background: var(--sx-sage-deep, #84a282); color: #fff; font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: none; transition: background .2s, transform .2s; }
+.fbk-btn:hover { background: var(--sx-sage-ink, #4d6b4f); color: #fff; transform: translateY(-1px); }
+.fbk-state { text-align: center; padding: 12px 0; }
+.fbk-state p { color: #5f6f63; line-height: 1.65; margin: 0 0 20px; }
+.fbk-state--ok > span { display: inline-flex; width: 64px; height: 64px; align-items: center; justify-content: center; border-radius: 50%; background: var(--sx-sage-soft, #eef4ec); color: var(--sx-sage-ink, #4d6b4f); font-size: 30px; margin-bottom: 14px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

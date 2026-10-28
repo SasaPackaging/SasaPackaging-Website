@@ -26,7 +26,8 @@ class CreateAdmin extends Command
     {
         $name     = $this->option('name') ?: $this->ask('Full name');
         $email    = $this->option('email') ?: $this->ask('Email (used to log in)');
-        $password = $this->option('password') ?: $this->secret('Password (minimum 8 characters)');
+        $password = $this->option('password') ?: $this->secret('Password (minimum 10 characters, with capital + small letters and a number)');
+        $email    = mb_strtolower(trim((string) $email));
         $roles    = array_map(function ($r) {
             return $r['label'];
         }, config('admin.roles'));
@@ -34,7 +35,7 @@ class CreateAdmin extends Command
 
         $validator = Validator::make(
             ['name' => $name, 'email' => $email, 'password' => $password, 'role' => $role],
-            ['name' => 'required|string|max:120', 'email' => 'required|email|max:150', 'password' => 'required|string|min:8', 'role' => 'required|in:' . implode(',', array_keys($roles))]
+            ['name' => 'required|string|max:120', 'email' => 'required|email|max:150', 'password' => ['required', 'string', \Illuminate\Validation\Rules\Password::min(10)->mixedCase()->numbers()], 'role' => 'required|in:' . implode(',', array_keys($roles))]
         );
 
         if ($validator->fails()) {

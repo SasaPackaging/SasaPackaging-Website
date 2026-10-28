@@ -61,6 +61,8 @@ $crumb   = $cms_dp['name'] ?? 'Contact us';
 
 					<form id="contact-form" method="post" action="{{ url('/common/contact_process') }}" data-sxf-form data-endpoint="{{ url('/common/contact_process') }}" novalidate>
 						<input type="hidden" name="_token" value="{{ csrf_token() }}">
+						<!-- spam trap: real visitors never see or fill this box -->
+						<input type="text" name="website" value="" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
 						<div class="sxf-grid">
 							<div class="sxf-field">
 								<label for="contact_full_name">Full name</label>

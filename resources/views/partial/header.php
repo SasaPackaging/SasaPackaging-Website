@@ -45,7 +45,7 @@ $sx_phone = $sx_get('PHONE');
 			<ul class="sx-nav__list">
 				<li class="<?= $home_active != '' ? 'is-active' : '' ?>"><a href="<?php echo URL::to('/'); ?>" <?= $home_active != '' ? ' aria-current="page"' : '' ?>>Home</a></li>
 
-				<?php foreach ($pages as $row_pages) {
+				<?php $shop_in_menu = false; foreach ($pages as $row_pages) {
 					$mega = false;
 					if ($row_pages['slug'] == 'products-and-services') {
 						$mega = true;
@@ -58,6 +58,12 @@ $sx_phone = $sx_get('PHONE');
 						$main_slug = 'javascript:void(0)';
 					} else {
 						$main_slug = $main_path . '/' . $row_pages['slug'] . '.html';
+					}
+					/* The CMS menu already has a "Shop Now" item: send it to the new shop page (no second link is added) */
+					if (preg_match('/^\s*shop\s*now\s*$/i', (string) $row_pages['name']) || in_array($row_pages['slug'], (array) config('shop.cms_slugs', []), true)) {
+						$shop_in_menu = true;
+						$main_slug = url(config('shop.url'));
+						$is_active = ($slug == 'shop' || $is_active);
 					}
 					$has_sub = count($db_pages_child) > 0;
 					$li_class = trim(($has_sub ? 'has-sub ' : '') . ($mega ? 'is-mega ' : '') . ($is_active ? 'is-active' : ''));
@@ -102,7 +108,10 @@ $sx_phone = $sx_get('PHONE');
 					</li>
 				<?php } ?>
 
-				<li class="sasa-machines-nav<?= $slug == 'machines' ? ' is-active' : '' ?>"><a href="<?= url('/machines.html') ?>" <?= $slug == 'machines' ? ' aria-current="page"' : '' ?>>Machines</a></li>
+				<li class="sasa-machines-nav<?= $slug == 'machines' ? ' is-active' : '' ?>"><a href="<?= url('/machines.html') ?>" <?= $slug == 'machines' ? ' aria-current="page"' : '' ?>><?= e(config('site.footer.machines_label')) ?></a></li>
+				<?php if (!$shop_in_menu) { ?>
+				<li class="<?= $slug == 'shop' ? 'is-active' : '' ?>"><a href="<?= url(config('shop.url')) ?>" <?= $slug == 'shop' ? ' aria-current="page"' : '' ?>>Shop Now</a></li>
+				<?php } ?>
 			</ul>
 
 			<!-- Mobile-only extras (search + quote + phone) -->

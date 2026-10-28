@@ -64,7 +64,7 @@ class CatalogEditor
         $q = $this->query($def);
 
         if ($search !== '' && in_array($def['title'], $def['columns'], true)) {
-            $q->where($def['title'], 'like', '%' . $search . '%');
+            $q->where($def['title'], 'like', \App\Support\Sanitize::like($search));
         }
         if (in_array($def['order'], $def['columns'], true)) {
             $q->orderBy($def['order']);

@@ -14,7 +14,7 @@
       <button type="button" data-cmd="removeFormat" title="Clear formatting">Clear</button>
       <button type="button" data-rich-code class="adm-rich__code" title="Show / hide HTML code">HTML</button>
     </div>
-    <div class="adm-rich__area" contenteditable="true" data-rich-area>{!! old($name, $value) !!}</div>
+    <div class="adm-rich__area" contenteditable="true" data-rich-area>{!! \App\Support\HtmlCleaner::clean(old($name, $value), true) !!}</div>
     <textarea class="adm-rich__src" name="{{ $name }}" data-rich-src hidden>{{ old($name, $value) }}</textarea>
   </div>
   @if($hint)<p class="adm-field__hint">{{ $hint }}</p>@endif

@@ -5,6 +5,7 @@ namespace App\Services\Quote;
 use App\Models\QuoteRequest;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -19,32 +20,59 @@ class QuoteSubmissionService
         $this->options = $options;
     }
 
+    /**
+     * Saves the request. If anything fails, NOTHING stays behind: the database rows are rolled back
+     * and the uploaded file is deleted, then the error is thrown again for the controller to log.
+     */
     public function store(array $data, UploadedFile $file = null, array $meta = [])
     {
-        $record = new QuoteRequest($data + $meta);
+        $stored = null;
 
-        if (!empty($data['product_id'])) {
-            $record->product_label = $this->options->label('products', $data['product_id']);
+        try {
+            if ($file) {
+                $stored = $this->storeFile($file);
+            }
+
+            return DB::transaction(function () use ($data, $file, $meta, $stored) {
+                $record = new QuoteRequest($data + $meta);
+
+                if (!empty($data['product_id'])) {
+                    $record->product_label = $this->options->label('products', $data['product_id']);
+                }
+                if (!empty($data['service_id'])) {
+                    $record->service_label = $this->options->label('services', $data['service_id']);
+                }
+
+                if ($file && $stored) {
+                    $record->file_path          = $stored;
+                    $record->file_original_name = Str::limit($this->safeName($file->getClientOriginalName()), 240, '');
+                    $record->file_size          = $file->getSize();
+                }
+
+                $record->save();
+
+                // Reference such as Q-00042, built from the row id so it is always unique.
+                $record->reference = config('quote.reference_prefix')
+                    . str_pad($record->id, (int) config('quote.reference_pad'), '0', STR_PAD_LEFT);
+                $record->save();
+
+                return $record;
+            });
+        } catch (\Throwable $e) {
+            if ($stored) {
+                Storage::disk(config('quote.file.disk'))->delete($stored); // no record, so no orphan file
+            }
+
+            throw $e;
         }
-        if (!empty($data['service_id'])) {
-            $record->service_label = $this->options->label('services', $data['service_id']);
-        }
+    }
 
-        if ($file) {
-            $stored = $this->storeFile($file);
-            $record->file_path          = $stored;
-            $record->file_original_name = Str::limit($file->getClientOriginalName(), 240, '');
-            $record->file_size          = $file->getSize();
-        }
+    /** The customer's original file name is only shown to admins: keep it a plain, harmless name. */
+    protected function safeName($name)
+    {
+        $name = preg_replace('/[\x00-\x1F\x7F\/\\\\]+/', '', (string) $name);
 
-        $record->save();
-
-        // Reference such as Q-00042, built from the row id so it is always unique.
-        $record->reference = config('quote.reference_prefix')
-            . str_pad($record->id, (int) config('quote.reference_pad'), '0', STR_PAD_LEFT);
-        $record->save();
-
-        return $record;
+        return $name !== '' ? $name : 'file';
     }
 
     protected function storeFile(UploadedFile $file)

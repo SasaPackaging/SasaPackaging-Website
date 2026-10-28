@@ -15,8 +15,13 @@ class RecordEditor
 {
     public function find($key)
     {
+        // $key comes from the URL: only a plain name is accepted ("banners", never "banners.table")
+        if (!is_string($key) || !preg_match('/^[A-Za-z0-9_\-]+$/', $key)) {
+            return null;
+        }
+
         $def = config('admin_content.tables.' . $key);
-        if (!$def || !Schema::hasTable($def['table'])) {
+        if (!is_array($def) || !Schema::hasTable($def['table'])) {
             return null;
         }
 

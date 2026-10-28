@@ -17,7 +17,7 @@
 
   <x-admin.card :flush="true">
     <form method="get" class="adm-filters">
-      <input class="adm-input" type="search" name="q" value="{{ request('q') }}" placeholder="Search by name">
+      <input class="adm-input" type="search" name="q" value="{{ \App\Support\Sanitize::query(request('q')) }}" placeholder="Search by name">
       <x-admin.button variant="ghost" size="sm">Search</x-admin.button>
     </form>
 

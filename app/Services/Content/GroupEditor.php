@@ -14,9 +14,14 @@ class GroupEditor
     /** @return array|null */
     public function find($key)
     {
+        // $key comes from the URL: only a plain name is accepted
+        if (!is_string($key) || !preg_match('/^[A-Za-z0-9_\-]+$/', $key)) {
+            return null;
+        }
+
         $group = config('admin_content.groups.' . $key);
 
-        return $group ? $group + ['key' => $key] : null;
+        return is_array($group) ? $group + ['key' => $key] : null;
     }
 
     public function usesSettingsTable(array $group)

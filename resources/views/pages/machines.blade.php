@@ -15,7 +15,10 @@
    Real machines = config machines.items  (name, image, desc). Image folder: public/upload/machines/
    While items is empty, soft placeholders are shown instead (same as the landing page). */
 $mch_cfg   = (array) config('landing.machines');
-$mch_items = (array) ($mch_cfg['items'] ?? []);
+$mch_items = \App\Models\Machine::forSite();                  // machines added in Admin > Machines
+if (count($mch_items) === 0) {
+	$mch_items = (array) ($mch_cfg['items'] ?? []);              // old way: config/landing.php
+}
 $mch_ph    = false;
 if (count($mch_items) === 0) {
 	$mch_ph = true;
@@ -40,7 +43,7 @@ if (count($mch_items) === 0) {
 			$name = trim(strip_tags((string) ($m['name'] ?? '')));
 			$desc = trim(strip_tags((string) ($m['desc'] ?? '')));
 			$file = trim((string) ($m['image'] ?? ''));
-			$img  = ($file !== '' && file_exists(public_path('upload/machines/' . $file))) ? url('/public/upload/machines/' . rawurlencode($file)) : '';
+			$img  = !empty($m['url']) ? $m['url'] : (($file !== '' && file_exists(public_path('upload/machines/' . $file))) ? url('/public/upload/machines/' . rawurlencode($file)) : '');
 		@endphp
 		<article class="mch-row{{ $k % 2 ? ' mch-row--flip' : '' }}">
 			<figure class="mch-media mch-media--{{ $k % 3 }}{{ $img === '' ? ' is-empty' : '' }}">

@@ -20,6 +20,8 @@ return [
         'generic'   => 'Something went wrong. Please try again.',
         'too_many'  => 'Too many attempts. Please wait a minute and try again.',
         'file_type' => 'This file type is not allowed. Allowed: :types.',
+        'file_upload'  => 'The file could not be uploaded. Please choose the file again.',
+        'file_content' => 'This file looks damaged or is not the type its name says. Please check it and try again.',
     ],
 
     // Notification emails sent to the company

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Site;
 
 use App\Services\Quote\QuoteOptionsService;
+use App\Support\UploadGuard;
 use Illuminate\Validation\Rule;
 
 /**
@@ -11,8 +12,21 @@ use Illuminate\Validation\Rule;
  */
 class StoreQuoteRequest extends SiteFormRequest
 {
+    protected function multilineFields()
+    {
+        return ['q_message'];
+    }
+
+    protected function fileFields()
+    {
+        return ['q_file'];
+    }
+
     protected function prepareForValidation()
     {
+        // remove control characters / line breaks from one-line fields first
+        parent::prepareForValidation();
+
         // "1,000" or "1 000" is a fine quantity; "0.5" / "1,5" is a fine size.
         $merge = [];
         foreach (['q_quantity_1', 'q_quantity_2'] as $key) {
@@ -56,14 +70,25 @@ class StoreQuoteRequest extends SiteFormRequest
             'q_quantity_2'   => 'required|integer|min:1|max:100000000',
 
             'q_file'         => [
+                'bail',
                 'required',
                 'file',
                 'max:' . $file['max_kb'],
-                // whitelist by extension (ai / cdr have no reliable mime type)
                 function ($attribute, $value, $fail) use ($file) {
+                    // 1. a real, fully uploaded file (not text typed into the field, not a broken upload)
+                    if (!UploadGuard::isUsable($value)) {
+                        return $fail(__('inbox.error.file_upload'));
+                    }
+
+                    // 2. whitelist by extension (ai / cdr have no reliable mime type)
                     $ext = strtolower($value->getClientOriginalExtension());
                     if (!in_array($ext, $file['extensions'], true)) {
-                        $fail(__('inbox.error.file_type', ['types' => implode(', ', $file['extensions'])]));
+                        return $fail(__('inbox.error.file_type', ['types' => implode(', ', $file['extensions'])]));
+                    }
+
+                    // 3. the real content must fit the extension, and must not hide script code
+                    if (!UploadGuard::mimeMatchesExtension($value, $ext) || UploadGuard::looksLikeScript($value)) {
+                        return $fail(__('inbox.error.file_content'));
                     }
                 },
             ],
@@ -71,8 +96,9 @@ class StoreQuoteRequest extends SiteFormRequest
             'q_full_name'    => $this->nameRules(),
             'q_phone'        => $this->phoneRules(),
             'q_email'        => $this->emailRules(),
-            'q_company'      => 'required|string|max:150',
+            'q_company'      => 'required|string|min:2|max:150',
             'q_message'      => 'nullable|string|max:3000',
+            'website'        => 'nullable|string|max:255', // honeypot, see isSpam()
         ];
     }
 

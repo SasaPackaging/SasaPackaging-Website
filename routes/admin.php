@@ -71,6 +71,23 @@ Route::middleware('admin.auth')->group(function () {
         Route::resource('services', 'ServiceController')->except(['show'])->parameters(['services' => 'id']);
         Route::resource('products', 'ProductController')->except(['show'])->parameters(['products' => 'id']);
 
+        // Reviews & ratings: all reviews kept here, admin chooses what shows on the website
+        Route::patch('reviews/{id}/toggle', 'ReviewController@toggle')->name('reviews.toggle');
+        Route::resource('reviews', 'ReviewController')->except(['show'])->parameters(['reviews' => 'id']);
+        Route::get('review-invites', 'ReviewInviteController@index')->name('review-invites.index');
+        Route::post('review-invites', 'ReviewInviteController@store')->name('review-invites.store');
+        Route::post('review-invites/{id}/resend', 'ReviewInviteController@resend')->name('review-invites.resend');
+        Route::patch('review-invites/{id}/revoke', 'ReviewInviteController@revoke')->name('review-invites.revoke');
+        Route::delete('review-invites/{id}', 'ReviewInviteController@destroy')->name('review-invites.destroy');
+
+        // Machines / Automation page
+        Route::patch('machines/{id}/toggle', 'MachineController@toggle')->name('machines.toggle');
+        Route::resource('machines', 'MachineController')->except(['show'])->parameters(['machines' => 'id']);
+
+        // Shop Now page products
+        Route::patch('shop-products/{id}/toggle', 'ShopProductController@toggle')->name('shop-products.toggle');
+        Route::resource('shop-products', 'ShopProductController')->except(['show'])->parameters(['shop-products' => 'id']);
+
         // Partners (home page logo slider)
         Route::resource('partners', 'PartnerController')->except(['show'])->parameters(['partners' => 'id']);
 

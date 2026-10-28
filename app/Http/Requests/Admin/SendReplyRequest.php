@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Support\Sanitize;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SendReplyRequest extends FormRequest
@@ -11,11 +12,20 @@ class SendReplyRequest extends FormRequest
         return true;
     }
 
+    /** The subject is one line only (a line break in an email subject can be abused to inject extra mail headers). */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'subject' => Sanitize::text($this->input('subject')),
+            'body'    => Sanitize::text($this->input('body'), true),
+        ]);
+    }
+
     public function rules()
     {
         return [
-            'subject' => 'required|string|max:190',
-            'body'    => 'required|string|max:10000',
+            'subject' => 'required|string|min:2|max:190',
+            'body'    => 'required|string|min:2|max:10000',
         ];
     }
 }

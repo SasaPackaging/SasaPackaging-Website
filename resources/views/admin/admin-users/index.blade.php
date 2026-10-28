@@ -37,7 +37,7 @@
           <x-admin.input name="name" label="Full name" :required="true" />
           <x-admin.input name="email" label="Email (used to log in)" type="email" :required="true" />
           <x-admin.select name="role" label="Role" :options="$roles" :value="config('admin.default_role')" :required="true" />
-          <x-admin.input name="password" label="Password" type="password" :required="true" hint="At least 8 characters." autocomplete="new-password" />
+          <x-admin.input name="password" label="Password" type="password" :required="true" hint="At least 10 characters, with capital and small letters and a number." autocomplete="new-password" />
           <x-admin.button :block="true">Add admin</x-admin.button>
         </form>
       </x-admin.card>

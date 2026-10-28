@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Mail;
 use Config;
+use Illuminate\Support\Facades\Log;
 use App\Model\Cms;
 use App\Model\Services;
 use App\Model\Features;
@@ -39,7 +40,14 @@ class WelcomeController extends Controller
 	 */
 	public function index()
 	{
-		$data_cms = Cms::whereRaw(" id=1 ")->first()->toArray();
+		// The home page text lives in cms row 1. If it is missing (empty / wrong database) show a calm
+		// "come back soon" page and write the reason to the log, instead of a crash page.
+		$home = Cms::find(1);
+		if (!$home) {
+			Log::error('Home page: cms row id=1 was not found. Is the database imported?');
+			abort(503, 'The website is being updated. Please come back soon.');
+		}
+		$data_cms = $home->toArray();
 		$rs_services = Services::whereRaw("status = 'Yes' AND is_featured = 'Yes' ")->orderByRaw('sort_order')->get()->toArray();
 		$cms_data_services = Cms::whereRaw(" slug='services' ")->get()->toArray();
 		$cms_data_portfolio = Cms::whereRaw(" slug='portfolio' ")->get()->toArray();

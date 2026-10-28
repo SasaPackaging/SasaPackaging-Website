@@ -20,6 +20,8 @@ use App\Model\Projects;
 
 use Session;
 
+use App\Support\Sanitize;
+
 use Request;
 
 use Redirect;
@@ -124,6 +126,10 @@ class BaseController extends Controller
 
 			$cms_dp = Cms::where('slug', '=', $slug)->first();
 
+			if (!$cms_dp) {
+				return $this->notFound();
+			}
+
 			$data['name'] = $cms_dp['name'];
 
 			$data['heading'] = $cms_dp['heading'];
@@ -144,6 +150,10 @@ class BaseController extends Controller
 		} else if ($slug == 'careers') {
 
 			$cms_dp = Cms::where('slug', '=', $slug)->first();
+
+			if (!$cms_dp) {
+				return $this->notFound();
+			}
 
 			$data['name'] = $cms_dp['name'];
 
@@ -166,6 +176,10 @@ class BaseController extends Controller
 
 			$cms_dp = Cms::where('slug', '=', $slug)->first();
 
+			if (!$cms_dp) {
+				return $this->notFound();
+			}
+
 			$data['name'] = $cms_dp['name'];
 
 			$data['heading'] = $cms_dp['heading'];
@@ -186,6 +200,10 @@ class BaseController extends Controller
 		} elseif ($slug == 'our-portfolio') {
 
 			$cms_dp = Cms::where('slug', '=', $slug)->first();
+
+			if (!$cms_dp) {
+				return $this->notFound();
+			}
 
 			$data['name'] = $cms_dp['name'];
 
@@ -240,6 +258,10 @@ class BaseController extends Controller
 		} elseif ($slug == 'products-and-services') {
 
 			$cms_dp = Cms::where('slug', '=', $slug)->first();
+
+			if (!$cms_dp) {
+				return $this->notFound();
+			}
 
 			$data['name'] = $cms_dp['name'];
 
@@ -320,34 +342,40 @@ class BaseController extends Controller
 			return view('pages.product-detail', ['title' => $cms_dp['name'], 'keywords' => $cms_dp['name'], 'description' => $cms_dp['name'], 'og_image' => $og_image, 'cms_dp' => $data]);
 		} elseif ($slug == 'search') {
 
-			$keywords = Request::input('s');
+			// What the visitor typed: always a short plain string (never an array, never HTML)
+			$keywords = Sanitize::query(Request::input('s'));
 
 			$data['name'] = 'Search';
-
 			$data['heading'] = 'Search';
-
-			$data['banner_heading'] = ($keywords == '') ? 'Search' : ' Search "' . $keywords . '"';
-
+			// escaped here because the search page prints banner_heading as it is
+			$data['banner_heading'] = ($keywords == '') ? 'Search' : ' Search "' . e($keywords) . '"';
 			$data['full_contents'] = '';
-
 			$data['tag_line'] = '';
-
 			$data['image'] = '';
-
 			$data['banner'] =  url('/') . '/images/bnr2.png';
-
 			$og_image = '';
 
+			$result_cms = [];
+			if ($keywords !== '') {
+				$like = Sanitize::like($keywords);
 
-
-			$result_cms =  Cms::orWhere('name', 'LIKE', "%{$keywords}%")->orWhere('heading', 'LIKE', "%{$keywords}%")->orWhere('full_contents', 'LIKE', "%{$keywords}%")->whereRaw("status = 'Yes' AND id!=1 ")->orderByRaw('name')->get()->toArray();
-
-
+				// (name OR heading OR text matches) AND published AND not the home page.
+				// The brackets matter: without them hidden pages showed up in the results.
+				$result_cms = Cms::where(function ($q) use ($like) {
+					$q->where('name', 'LIKE', $like)
+						->orWhere('heading', 'LIKE', $like)
+						->orWhere('full_contents', 'LIKE', $like);
+				})->where('status', 'Yes')->where('id', '!=', 1)->orderBy('name')->get()->toArray();
+			}
 
 			return view('pages.search', ['title' => $data['name'], 'keywords' => $data['name'], 'description' => $data['name'], 'og_image' => $og_image, 'cms_dp' => $data, 'result_cms' => $result_cms]);
 		} elseif ($slug == 'marketing-assets') {
 
 			$cms_dp = Cms::where('slug', '=', $slug)->first();
+
+			if (!$cms_dp) {
+				return $this->notFound();
+			}
 
 			$data['name'] = $cms_dp['name'];
 
@@ -402,26 +430,25 @@ class BaseController extends Controller
 			}
 		} else {
 
-			$data['title'] = 'Error 404 ';
-
-
-
-			$data['heading'] =   $data['name'] = 'Error 404';
-
-			$data['banner_heading'] = ($cms_dp['image_title'] != "") ? $cms_dp['image_title'] : 'Error 404';
-
-			$data['full_contents'] = 'Sorry Page Was Not Found';
-
-			$data['tag_line'] = '';
-
-			$data['image'] = '';
-			$data['id'] = '0';
-
-			$data['banner'] = url('/') . '/images/bnr2.png';
-
-			$og_image = '';
-
-			return view('pages.cms', ['title' => $data['title'], 'keywords' => $data['title'], 'description' => $data['title'], 'og_image' => $og_image, 'cms_dp' => $data]);
+			return $this->notFound();
 		}
+	}
+
+	/**
+	 * A proper "page not found" answer: the same styled page, but with the real HTTP status 404
+	 * (it used to answer 200, which search engines treat as a normal page).
+	 */
+	protected function notFound()
+	{
+		$data['title'] = 'Error 404 ';
+		$data['heading'] = $data['name'] = 'Error 404';
+		$data['banner_heading'] = 'Error 404';
+		$data['full_contents'] = 'Sorry Page Was Not Found';
+		$data['tag_line'] = '';
+		$data['image'] = '';
+		$data['id'] = '0';
+		$data['banner'] = url('/') . '/images/bnr2.png';
+
+		return response()->view('pages.cms', ['title' => $data['title'], 'keywords' => $data['title'], 'description' => $data['title'], 'og_image' => '', 'cms_dp' => $data], 404);
 	}
 }

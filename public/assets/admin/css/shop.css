@@ -1,0 +1,3 @@
+/* SASA Admin — Shop products (extra bits only; list and form reuse news.css) */
+.adm-inline-form { display: inline; margin: 0; }
+.adm .adm-card + .adm-card { margin-top: 18px; }

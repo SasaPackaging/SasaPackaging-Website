@@ -10,10 +10,10 @@
 
   <x-admin.card :flush="true">
     <form method="get" class="adm-filters">
-      <input class="adm-input" type="search" name="q" value="{{ request('q') }}" placeholder="Search title">
+      <input class="adm-input" type="search" name="q" value="{{ $search ?? '' }}" placeholder="Search title">
       <select class="adm-select" name="type" data-adm-autosubmit>
         <option value="">All types</option>
-        @foreach($types as $key => $label)<option value="{{ $key }}" {{ request('type') === $key ? 'selected' : '' }}>{{ $label }}</option>@endforeach
+        @foreach($types as $key => $label)<option value="{{ $key }}" {{ ($type ?? '') === $key ? 'selected' : '' }}>{{ $label }}</option>@endforeach
       </select>
       <x-admin.button variant="ghost" size="sm">Search</x-admin.button>
     </form>

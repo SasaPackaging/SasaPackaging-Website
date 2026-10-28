@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SaveNewsEventRequest;
 use App\Models\NewsEvent;
 use App\Services\News\NewsEventService;
+use App\Support\Sanitize;
 use Illuminate\Http\Request;
 
 /**
@@ -27,16 +28,22 @@ class NewsEventController extends Controller
     {
         $query = NewsEvent::query();
 
-        if ($request->filled('type') && array_key_exists($request->type, config('news.types'))) {
-            $query->where('type', $request->type);
+        // filters come from the address bar: always plain text, never an array
+        $type   = Sanitize::query($request->query('type'), 30);
+        $search = Sanitize::query($request->query('q'));
+
+        if ($type !== '' && array_key_exists($type, config('news.types'))) {
+            $query->where('type', $type);
         }
-        if ($request->filled('q')) {
-            $query->where('title', 'like', '%' . $request->q . '%');
+        if ($search !== '') {
+            $query->where('title', 'like', Sanitize::like($search)); // % and _ are searched literally
         }
 
         return view('admin.news.index', [
-            'items' => $query->orderByDesc('published_at')->orderByDesc('id')->paginate(config('news.per_page'))->appends($request->only('type', 'q')),
+            'items' => $query->orderByDesc('published_at')->orderByDesc('id')->paginate(config('news.per_page'))->appends(['type' => $type, 'q' => $search]),
             'types' => config('news.types'),
+            'type'   => $type,
+            'search' => $search,
         ]);
     }
 

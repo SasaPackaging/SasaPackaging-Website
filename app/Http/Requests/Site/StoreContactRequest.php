@@ -7,14 +7,20 @@ namespace App\Http\Requests\Site;
  */
 class StoreContactRequest extends SiteFormRequest
 {
+    protected function multilineFields()
+    {
+        return ['contact_message'];
+    }
+
     public function rules()
     {
         return [
             'contact_full_name' => $this->nameRules(),
             'contact_email'     => $this->emailRules(),
             'contact_phone'     => $this->phoneRules(),
-            'contact_subject'   => 'required|string|max:180',
-            'contact_message'   => 'required|string|max:5000',
+            'contact_subject'   => 'required|string|min:2|max:180',
+            'contact_message'   => 'required|string|min:5|max:5000',
+            'website'           => 'nullable|string|max:255', // honeypot, see isSpam()
         ];
     }
 

@@ -18,18 +18,12 @@ class Setting extends Model
       | function to find value by key 
       |--------------------------------------------------------------------------
      */
-    public static function findByKey($key){
-       
-       $result =DB::select( DB::raw("SELECT key_value			
-			FROM
-				tbl_settings
-			WHERE
-				  key_name = '".$key."' 
-			") );
-			
-		//echo '<pre>'; print_r($result); exit;	
-       
-		return $result[0]->key_value;
+    public static function findByKey($key, $default = null){
+
+        // bound value (no SQL injection) and no crash when the key does not exist
+        $row = DB::table('tbl_settings')->where('key_name', $key)->first();
+
+        return $row ? $row->key_value : $default;
     }
     
     

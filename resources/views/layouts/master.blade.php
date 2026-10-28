@@ -4,11 +4,11 @@
   <head>
     <meta charset="utf-8" />
     @section('title')
-    <title>{!! $title !!}</title>
+    <title>{!! e($title, false) !!}</title>
     @show @section('keywords')
-    <meta name="Keywords" content="{!! $keywords !!}" />
+    <meta name="Keywords" content="{!! e($keywords, false) !!}" />
     @show @section('description')
-    <meta name="Description" content="{!! $description !!}" />
+    <meta name="Description" content="{!! e($description, false) !!}" />
     @show
     <!-- Stylesheets -->
     <link
