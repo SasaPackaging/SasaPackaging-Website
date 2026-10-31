@@ -40,8 +40,7 @@
 	<link href="{{ url('/public/assets/main/css/sasa-premium.css') }}" rel="stylesheet">
 	<link href="{{ url('/') }}/public/assets/main/css/sasa-nav.css" rel="stylesheet">
 
-	{{-- Tailwind (built with: npm run build:css) --}}
-	<link href="{{ url('/public/assets/main/css/tailwind-generated.css') }}" rel="stylesheet">
+	
 		{{-- Hero slider look (must stay AFTER the css above) --}}
 	<link href="{{ url('/public/assets/main/css/sasa-hero.css') }}?v=4" rel="stylesheet">
 	<link href="{{ url('/public/assets/main/css/sasa-about.css') }}?v=1" rel="stylesheet">
@@ -55,7 +54,7 @@
 	@section('customstyle')
 	@show
 </head>
-<body class="sx-site bg-ivory font-sans text-body antialiased">
+<body class="sx-site">
 
 	<div class="page-wrapper">
 		<a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', config('site.whatsapp')) }}" class="float" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
