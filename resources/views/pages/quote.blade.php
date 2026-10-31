@@ -206,6 +206,8 @@ $tel    = function ($v) { return preg_replace('/[^0-9+]/', '', (string) $v); };
 							</div>
 						</div>
 
+						@include('partial.captcha', ['action' => 'quote'])
+
 						<div class="sxf-actions">
 							<button type="submit" class="sxi-btn sxi-btn--dark" data-sxf-submit>
 								<span data-sxf-label data-busy="Sending…">Submit request</span>
@@ -251,6 +253,7 @@ $tel    = function ($v) { return preg_replace('/[^0-9+]/', '', (string) $v); };
 @stop
 
 @section('customscript')
+@include('partial.captcha-script')
 <script src="{{ url('/') }}/public/assets/main/js/sasa-forms.js"></script>
 <script src="{{ url('/') }}/public/assets/main/js/sasa-inner.js"></script>
 @stop

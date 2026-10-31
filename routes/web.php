@@ -29,9 +29,11 @@ Route::get('/machines.html', function () {
 	]);
 });
 // Public forms. Each one is limited to 10 submissions per minute per visitor (stops spam / flooding).
-Route::post('/common/contact_process', 'Site\ContactController@store')->middleware('throttle:10,1');
+// Contact + Quote also need a passed Cloudflare Turnstile check (middleware "captcha:<form>", see config/captcha.php).
+// Order matters: the throttle runs first, so a flood cannot become a flood of calls to Cloudflare.
+Route::post('/common/contact_process', 'Site\ContactController@store')->middleware(['throttle:10,1', 'captcha:contact']);
 Route::post('/careers/apply', 'CareerController@apply')->middleware('throttle:10,1');
-Route::post('/send_quote', 'Site\QuoteController@store')->middleware('throttle:10,1');
+Route::post('/send_quote', 'Site\QuoteController@store')->middleware(['throttle:10,1', 'captcha:quote']);
 
 // SECURITY: the old routes /common/processenq, /common/commentsubmit, /common/register_process and
 // /save_career were removed. Their code no longer exists (they only caused errors), and /save_career

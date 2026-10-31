@@ -6,6 +6,9 @@
      File input:       inside <label class="sxf-drop">, with data-max-mb="15"
      Submit button:    data-sxf-submit  with <span data-sxf-label data-busy="Sending…">Send</span> inside
      Message area:     <p data-sxf-note></p>   (used only if the site's Toast popup is not available)
+     Captcha:          <div class="cf-turnstile" data-sxf-captcha ...> (partial/captcha.blade.php). The form is not sent
+                       until Cloudflare's token is present, and the widget is reset after every attempt
+                       (a token works only once).
 
    The server answers JSON: { "status": "success" | "error", "message": "..." } — same as before. */
 (function () {
@@ -109,7 +112,56 @@
       }
       return false;
     }
-    return true;
+    return checkCaptcha(form);
+  }
+
+  /* ---- Captcha (Cloudflare Turnstile). Does nothing on a form that has no widget. ---- */
+  function captchaBox(form) {
+    return form.querySelector("[data-sxf-captcha]");
+  }
+
+  function checkCaptcha(form) {
+    var widget = captchaBox(form);
+    if (!widget) {
+      return true;
+    }
+    var wrap = widget.closest(".sxf-captcha") || widget;
+    var field = form.querySelector('input[name="cf-turnstile-response"]');
+    var ok = !!(field && field.value);
+
+    wrap.classList.toggle("field_error", !ok);
+    if (!ok) {
+      notify(
+        form,
+        "error",
+        window.turnstile
+          ? "Please wait for the security check to finish, then send again."
+          : "The security check could not load. Please refresh the page, or turn off any content blocker for this site, and try again.",
+      );
+      try {
+        wrap.scrollIntoView({ behavior: "smooth", block: "center" });
+      } catch (e) {
+        /* older browsers: ignore */
+      }
+    }
+    return ok;
+  }
+
+  /* A token can be used once. After every attempt (success or not) ask Cloudflare for a fresh one. */
+  function resetCaptcha(form) {
+    var widget = captchaBox(form);
+    if (!widget) {
+      return;
+    }
+    var wrap = widget.closest(".sxf-captcha") || widget;
+    wrap.classList.remove("field_error");
+    if (window.turnstile && typeof window.turnstile.reset === "function") {
+      try {
+        window.turnstile.reset(widget);
+      } catch (e) {
+        /* the widget was not ready: nothing to reset */
+      }
+    }
   }
 
   function setBusy(form, on) {
@@ -171,6 +223,7 @@
       })
       .then(function (r) {
         setBusy(form, false);
+        resetCaptcha(form);
         if (r.data && r.data.status === "success") {
           notify(
             form,
@@ -193,6 +246,7 @@
       })
       .catch(function () {
         setBusy(form, false);
+        resetCaptcha(form);
         notify(
           form,
           "error",

@@ -83,5 +83,8 @@ class Kernel extends HttpKernel
         'admin.auth' => \App\Http\Middleware\Admin\Authenticate::class,
         'admin.guest' => \App\Http\Middleware\Admin\RedirectIfAuthenticated::class,
         'admin.can' => \App\Http\Middleware\Admin\Permission::class,
+
+        // Public forms: Cloudflare Turnstile check, used as  captcha:contact  /  captcha:quote
+        'captcha' => \App\Http\Middleware\VerifyCaptcha::class,
     ];
 }

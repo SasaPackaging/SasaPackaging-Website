@@ -86,6 +86,8 @@ $crumb   = $cms_dp['name'] ?? 'Contact us';
 							</div>
 						</div>
 
+						@include('partial.captcha', ['action' => 'contact'])
+
 						<div class="sxf-actions">
 							<button type="submit" class="sxi-btn sxi-btn--dark" data-sxf-submit>
 								<span data-sxf-label data-busy="Sending…">Send message</span>
@@ -142,6 +144,7 @@ $crumb   = $cms_dp['name'] ?? 'Contact us';
 @stop
 
 @section('customscript')
+@include('partial.captcha-script')
 <script src="{{ url('/') }}/public/assets/main/js/sasa-forms.js"></script>
 <script src="{{ url('/') }}/public/assets/main/js/sasa-inner.js"></script>
 @stop
